@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(pdflatex:*)",
+      "Bash(quarto render:*)",
+      "Bash(mkdir:*)",
+      "Read(//c/Users/kerry/repos/**)",
+      "Bash(git config:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

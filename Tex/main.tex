@@ -1,0 +1,454 @@
+\documentclass[12pt]{scrarticle}
+\input{head.tex}
+
+\begin{document}
+\doublespacing
+\date{September 1, 2025}
+
+\title{The Empirical Virtue of Complexity\\ in Simple Economic Models}
+
+\author{Kerry Back\thanks{Jones Graduate School of Business and School of Social Sciences, Rice University} 
+\and Alexander Ober\thanks{Jones Graduate School of Business, Rice University} 
+\and Seth Pruitt\thanks{W.P.\ Carey School of Business, Arizona State University} }
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+We show that the empirical virtue of complexity arises in simple economic models. We show that machine-learning estimates, in data simulated from well-known economic frameworks, are superior to those from simpler empirical models. Machine-learning empirical models more accurately estimate the true SDF than sort-based or regression-based methods. Moreover, machine-learning methods more accurately estimate firms' SDF weights, thus providing a superior depiction of the economically important firm heterogeneity that the economic models were designed to explain.
+\end{abstract}
+
+\vspace*{2\baselineskip}
+\centerline{PRELIMINARY AND INCOMPLETE}
+
+\clearpage\setcounter{page}{1}
+
+\section{Introduction}
+Empirical asset pricing seeks to understand the stochastic discount factor (SDF) driving asset prices. A seminal strand of literature flows from the CAPM of \citet{sharpe} and \citet{lintner} through the celebrated \citet{fama-french-2015} multi-factor model, and represents the SDF by the excess returns on a collection of portfolios sorted using a handful empirically-relevant asset characteristics. Meanwhile, an alternative strand flows from \cite{fama-macbeth} and \citet{rosenberg} through the recent \citet{fama_french_2019}, and represents the SDF by cross-sectional regression estimates of excess returns on those characteristics. An important difference between the portfolio-sort and regression-based approaches is that the latter allows a large number of characteristics to be used jointly. \citet*{kps} %and \citet{gu_kelly_xiu_2021} 
+combines this insight with machine-learning-inspired dimension reduction to arrive at efficient estimates of a low-dimensional SDF. Recently, \citet{dkkm} argue that the assumption of low dimensionality significantly restricts the SDF estimator---building from the virtue of complexity shown in \citet*{kelly_malamud_zhou_2024}---and develop estimates that use both a large number of asset characteristics and an immense number of random transformations of those characteristics. The machine-learning models of \citet*{kps} and \citet{dkkm} have been shown to significantly outperform simpler portfolio-sort models like \citet{fama-french-2015} in out-of-sample analysis of actual data.
+
+Economists imagine actual data as coming from an unknown data generating process. No economic model claims to completely represent the actual data generating process---the latter is viewed as far too complicated to comprehend and hence ``all models are wrong'' \citep{box_1976}. Economic models are tremendous simplifications of reality. As technically involved as their solutions may be, the agents' choices follow from clear economic incentives via well-defined mathematical functions so they ``maintain the clear quantitative-parable feature of good economic analysis'' \citep{cochrane2011}.  Relative to the real world, economic models are simple.
+
+We show that the empirical virtue of complexity arises in simple economic models, too. That is, in data simulated from different well-known economic models, we find that machine-learning estimators \citep[e.g.][]{kps,dkkm} outperform simpler estimators \citep[e.g.][]{fama-french-2015,fama_french_2019} at revealing the true SDF. Hence, complex empirical models are important tools for understanding even data coming from simple economic models. Furthermore, we show that the estimates can be used to learn about the economics driving different firms' weights in the SDF.\footnote{We mean the tradable SDF that \citet{hansen-richard} shows exists. For pricing purposes, this is equivalent to the nontradable SDF that the economic models assume.} These results show that machine-learning estimators can uncover economic structure.%, and suggest methods by which empirically-successful estimates may be turned into economic insights. 
+
+We view the complexity-based methods of \citet{kelly_malamud_zhou_2024} and \citet{dkkm} as the vanguard of an agenda bringing into financial economics a host of machine-learning techniques that have shown resounding efficacy in non-financial fields. It is common for new lines of scientific inquiry to face skepticism, and this nascent agenda has. As an example, \citet{berk2023}'s Comment argues that return prediction alone, particularly of the \citet{kelly_malamud_zhou_2024} type, is unlikely to deliver interpretable economic insights. Our work contributes to building a bridge from successful machine-learning estimates to interpretable economic insights. Complex yet empirically successful models are likely to proliferate in future literature, driven by the surprising existence of ``double descent'': the finding that complex statistical models provide optimal generalization (out-of-sample performance) for a variety of data-generating processes \citep{hastie2022surprises}. It will be fruitful for economic theory to learn from insights uncovered by overparameterized models, whose empirical success need not be due to data-snooping or overfitting, and that is what we aim to contribute.
+
+Empirical asset pricing uses heterogeneous asset characteristics as crucial information, and therefore, we require our economic models to produce such characteristics. We use seminal models that explicitly generate heterogeneous firms: \citet*{bgn}, \cite{kp_2014}, and \cite{GS21}.  We use the calibrations of the original papers and simulate synthetic panels of stock returns and characteristics.  We then demonstrate that complex models are useful for understanding the linkages between characteristics and returns even in these relatively simple models.
+
+Specifically, we focus on how well the empirical models uncover the true SDF and firms' (conditional) weights thereon. We find that the machine-learning models of \citet{kps} and \citet{dkkm} provide a superior depiction of the SDF, measured by both its realized Sharpe Ratio and its \citet{hj} Distance, relative to simpler empirical models building on \citet{fama-french-2015} or \citet{fama_french_2019}. Then we turn to the related question of how accurately the estimates reveal firms' exposure to the SDF. First, we find that machine-learning methods capture the true, persistent nature of these SDF weights, whereas simpler empirical models imply much less persistence. Second, the machine-learning estimates exhibit a higher cross-sectional correspondence to the true weights than simpler models' estimates. Altogether, these results suggest that machine-learning estimates, though complex, are important tools for learning about economic structures.
+
+
+
+\paragraph{Related literature} Machine-learning methods in finance have exploded in usage. A partial list of empirical contributions of the past several years include \citet{gu2020empirical,kozak2020shrinking,lettau2020factors,freyberger2020dissecting,bianchi2021bond,bali2023option}. Some of this superior empirical performance has been questioned, for instance in \citet{li2025mluniverse} which argue that backward-looking signal curation is a significant factor. Meanwhile, machine-learning methods, particularly neural networks, have recently been employed in macroeconomics and finance to solve dynamic models that have not been computationally feasible before \citep[e.g.][]{barnett_brock_hansen_hu_huang_2023_dla,duarte2024machine}. Though we solve dynamic models, unlike those papers we do not use machine-learning methods for their solution (it is unnecessary), and instead use the methods to analyze data simulated from the solved models. 
+
+Recently, \citet{kelly_malamud_zhou_2024} explicitly argued for the benefits of complexity in return prediction, defining complexity by a number of parameters that surpasses the number of observations \citep[further elaboration on this idea is found in][]{kelly_malamud_2025}, and has generated responding work. \citet{nagel2025complexity} argues that particular results in \citet{kelly_malamud_zhou_2024} reflect volatility-managed momentum more than machine-learning performance, and \citet{kelly_malamud_2025} disagree with that result. \citet{berk2023}'s Comment also critiques the \citet{kelly_malamud_zhou_2024} results and questions the ability of complexity to connect to economic theory---the present paper, in some ways, seeks to address those criticisms.
+
+By studying equilibrium models with a small number of economically meaningful risk factors, theoretical work tries to understand how firms' dynamic decision-making is reconciled with the empirically observed cross-section of returns (\citet{bgn, GKZjpe03, CFG04, Zhang05, EP13, kp_2014, KuehnSchmid14, ACDL18, GS21}). We show that complex empirical models help to explain the pricing of risk factors in equilibrium models. This result bridges theoretical work, which hopes to explain returns using parsimonious, economically-motivated, factors, and empirical work, which uses statistically-motivated, often highly parameterized, methods to understand patterns in data. 
+
+\paragraph{Road map} The paper is organized as follows. We concisely discuss the economic framework of \citet*{bgn}, \citet{kp_2014} and \citet{GS21} in Section~\ref{sec:economic models} and how the (tradable) SDF is similarly derived in any model. The empirical models we examine are detailed in Section \ref{sec:empirical models}. Section \ref{sec:results} details our results focusing on how well empirical models uncover the true SDF and firm weights thereon. We then conclude. Further model details are given in the appendices.
+
+\section{Economic Models}\label{sec:economic models}
+
+Here we briefly outline salient features of the economic models. We provide more detailed descriptions of the models and their solutions in the appendices. We simulate the models at a monthly frequency to align with the standard frequency of data used in empirical asset-pricing studies.
+
+\subsection{Berk, Green, and Naik (1999)}
+
+In the model of \citet*{bgn} (henceforth BGN), firms invest optimally given an exogenous pricing kernel and random investment opportunities.  The SDF at date $t$ for pricing cash flows at $t+1$ is 
+\begin{equation}
+m_{t+1} := \E^{-r_t - \frac{1}{2}\sigma_m^2 + \sigma_m \varepsilon_{t+1}}\,.
+\end{equation}
+The interest rate process is a \cite{vasicek} process:
+\begin{equation}
+r_{t+1} = r_t + \kappa(\theta - r_t) + \sigma_r \xi_{t+1}\,.
+\end{equation}
+Here, $\varepsilon$ and $\xi$ are sequences of iid standard normals that are contemporaneously correlated with each other.
+
+There are a fixed number of firms.  Each firm begins at date 0 with zero capital.  Each firm receives a take-it-or-leave-it investment opportunity each period.  All projects require the same amount of capital and are fully equity financed.  A project that is taken generates operating cash flows each period until it randomly dies.  Free cash flow is paid out to shareholders.
+
+The operating cash flow of each project has a time-invariant beta with respect to the SDF process shocks $\varepsilon$ and a time-invariant idiosyncratic risk.  The betas and idiosyncratic risks are drawn randomly for each firm and date from fixed distributions.  A project's net present value (NPV) depends on its beta and on the level of interest rates. Firms accept all positive NPV projects.  Because the project arrival processes are the same across firms, all firms have the same value of growth options at any point in time.  The value of growth options varies over time, because of variation in the interest rate.  The value of assets in place varies across firms at each point in time due to differences in past project quality.  The value of assets in place also depends on the interest rate. 
+
+The model generates the following data for each firm each period: 
+\begin{itemize}\setlength\itemsep{0pt}
+\item book value of equity = book value of assets
+\item market value of equity
+\item net income = operating cash flow
+\item stock return
+\end{itemize}
+From these, we calculate size, book-to-market, ROE, asset growth, and momentum ($t-12$ through $t-2$ returns).  BGN show that size, book-to-market, and momentum are correlated with subsequent returns. We calibrate the model following BGN, and simulate \numpanels panels of data with a period length of one month, as do BGN. We simulate 920-month panels, and we use the first 200 months as burn-in.
+
+\subsection{Kogan and Papanikolaou (2014)}
+
+In \cite{kp_2014} (hereafter KP), firms likewise invest optimally given an exogenous pricing kernel. 
+The model is set in continuous time.  It has two aggregate state variables: a disembodied productivity process $x_t$ that affects the productivity of all capital, and a process $z_t$ that affects only the productivity (equivalently, the cost per productive unit) of newly installed capital. These variables are independent geometric Brownian motions:
+\begin{align*}
+\frac{\D x_t}{x_t} &= \mu_x  \,\D t + \sigma_x  \,\D B_{xt} \\
+\frac{\D z_t}{z_t} &= \mu_z \,\D t + \sigma_z \,\D B_{zt}\,.
+\end{align*}
+There are also firm-specific and project-specific productivity processes that are independent square-root processes.  The SDF process is given by 
+\[
+\frac{\D M_t}{M_t} = -r \,\D t - \gamma_x \,\D B_{xt} - \gamma_z \,\D B_{zt}\,.
+\]
+The risk-free rate $r$ is constant.
+
+Each firm begins at date 0 with zero capital. Firms acquire potential projects stochastically at a firm-specific rate that switches between high and low states. When presented with a new project at time $t$, a firm chooses how much capital to install and pays the investment cost, which depends on $z$. The project then produces cash flows until it randomly dies.  Cash flows depend on the capital invested, the economy-wide productivity process $x$ and the firm-specific and project-specific productivity processes.  
+
+We implement the continuous-time model in discrete time at a monthly frequency. We use simple Bernoulli approximations to the Poisson arrival and expiration of projects, and we use closed-form transition distributions to discretize the other continuous-time processes that describe the model. 
+The model generates the same list of data as in BGN. We use a monthly version of KP's calibration.\footnote{KP simulate at the weekly frequency and form annual observations.} We simulate \numpanels panels of 920-month data, as with BGN.
+
+\subsection{Gomes and Schmid (2021)}
+
+In \cite{GS21} (hereafter GS), firms invest optimally and can accumulate debt. GS assume the SDF is determined endogenously through market clearing with a household sector. To simplify our implementation of the model, we assume the SDF at date $t$ for pricing cash flows at $t+1$ is \[
+m_{t+1} := e^{-r - \frac{1}{2} \gamma_x + \gamma_x \nu_{x,t+1}}.
+\]
+There is a single aggregate productivity process $x_t$, which is an AR(1) process:
+\[
+x_t = (1 - \rho_x) \bar{x} + \rho_x x_{t-1} + \sigma_x \nu_{xt}.
+\]
+
+Each firm maximizes expected future profits, which are linear in their capital stock. The productivity of each firm's capital is determined by both aggregate productivity and an independent firm-specific process. Each period, firms receive an opportunity to increase their capital stock. Before deciding whether to invest, each firm observes the realization of the investment cost, which is independent across time and firms. Investment scales up capital stock by a factor $g$. Capital stock also has a constant maintenance cost.
+
+Firms can access debt markets. For simplicity, we assume away equity financing costs, which are modeled in reduced form in GS as a financing cost that is incurred whenever current period cash flows are negative. Each firm holds a perpetual bond that pays a constant coupon unless the firm defaults, in which case future payoffs of the bond are 0. Firms default strategically whenever the equity value of the firm is negative. They can refinance debt only if a refinancing shock occurs. That is, with probability $\zeta$, a firm repurchases all current outstanding debt and issues new debt at a cost. Debt is rationally priced by risk-neutral creditors, taking into account the cost of default, in which a fraction of firm assets can be recovered.
+
+We simulate the model at a monthly frequency. GS assume a mass of firms enter each period. We simplify by assuming only bankrupt firms are replaced. As in GS, we assume incoming firms have no debt, have firm-specific productivity drawn from its stationary distribution, and have a capital stock equal to a fraction of the average firm's capital stock. The model generates the same list of data as the other models, as well as additional leverage variables. Our calibration is largely a monthly version of GS's calibration,\footnote{GS do not specify their distribution of investment costs, though they state they select a uniform distribution to match a quarterly investment rate of 0.06 in the data. We do the same. We also select $r$ to equal its value in BGN, and we select $\gamma_x = 0.5$, which implies a reasonable equity premium in simulated data.} which we use to simulate 10 panels of 920-month data.
+
+
+\subsection{SDFs in the Economic Models}\label{economic_sdf}
+
+BGN and KP specify exogenous SDF processes and use them to compute prices and returns.  There is no assumption of market completeness, and the SDFs are nontradable.  As is well known, there is always a unique tradable SDF formed by projecting any SDF onto the linear span of the asset returns.  In our empirics, we work exclusively with excess returns, as is common, so we do not attempt to price the risk-free asset.  We call any random variable that is orthogonal to excess returns an SDF.  
+
+We choose a particular SDF following \cite{hansen-richard} and \citet{britten-jones}.  Conditional on information at date~$t$, we project the constant~1 onto the span of the excess stock returns to obtain an excess return $\gamma_t'R_{t+1}$, where $R_{t+1}$ denotes the vector of excess stock returns from $t$ to $t+1$ and $\gamma_t$ is a vector that depends only on date~$t$ information.  \cite{hansen-richard} call $\gamma_t'R_{t+1}$ the random variable that ``represents the expectation operator on the space of excess returns'' (it is the Riesz representation).  The residual $1-\gamma_t'R_{t+1}$ is orthogonal to excess returns, and we call it the conditional tradable SDF.  We  compute $\gamma_t$ and the conditional tradable SDF in each of the BGN and KP models.
+
+The BGN and KP models are dynamic, and the vector $\gamma_t$ varies randomly over time, depending on date~$t$ information.  The models are also non-Markovian in the sense that $\gamma_t$ is history dependent rather than depending only on a set of date-$t$ state variables.  As emphasized before, the models are relatively simple, but the dynamic non-Markovian nature complicates an empiricist's estimation of the conditional tradable SDF from past returns.
+
+% \subsection{GS}
+
+\section{Empirical Models}\label{sec:econometric models}\label{sec:empirical models}
+
+In the factor models that we study, all factors are excess returns.  We can mimic the construction of Section~\ref{economic_sdf} for each factor model to compute $\beta_t$ such that $1-\beta_t'F_{t+1}$ is orthogonal to the factors, where $F_{t+1}$ denotes the vector of factor (excess) returns from~$t$ to $t+1$.  The excess return $\beta_t'F_{t+1}$ has the maximum Sharpe ratio among all portfolios of the factors.  
+
+In actual empirical work, we observe the factors, but, of course, we do not know $\beta_t$ (nor $\gamma_t$).  We can estimate $\beta_t$ in-sample by computing the tangency portfolio of factors, but the real test of a model is how well it performs out of sample.  This means that we need to estimate $\beta_t$ using only information available at date~$t$.  We follow the usual technique of estimating over rolling samples (as described further below).  This produces $\hat \beta_t'F_{t+1}$, which we call the estimated mean-variance efficient (MVE) portfolio return, and $1-\hat \beta_t'F_{t+1}$, which we call the estimated factor SDF.
+
+The goal of factor modeling is to minimize pricing errors.  This is equivalent to minimizing the Hansen-Jagannathan distance \citep{hj} and to maximizing the Sharpe ratio \citep{barillas-shanken}.  So, we evaluate factor models by evaluating how close $\hat \beta_t'F_{t+1}$ is to $\gamma_t'R_{t+1}$ either in the $L^2$ norm or in terms of their Sharpe ratios.  Obviously, this comparison depends not just on the alternative sets of factors but also on the method used to estimate the vector $\beta_t$ for each set of factors.
+
+To estimate $\beta_t$, we follow \citet{dkkm} by running the Britten-Jones regression over rolling 360-month samples with the regression being penalized (ridge) regression when the number of factors is large.  We also tried ridge regression for the small factor models FFC, FMR, and KPS described below, but it underperformed OLS, and we do not report the results.  Next, we describe how the various sets of factors are constructed.  We present the details of the ridge regression in Section~\ref{ss:ridge}.
+
+\subsection{FFC and FMR}
+
+We replicate the \citet{fama-french-2015} construction of SMB, HML, RMW, and CMA and include UMD as well as the value-weighted market excess return to form the six-factor Fama-French-Carhart (FFC) model.   
+
+We also run \citet{fama-macbeth} regressions on book-to-market, momentum, profitability, and asset growth.  We standardize the portfolios implicit in the Fama-MacBeth regressions \citep{rosenberg, fama76} to be 100\% long and 100\% short and use the portfolio returns in conjunction with the equally weighted market excess return to form what we call the Fama-MacBeth-Rosenberg (FMR) model.\footnote{We use the equal weighted market excess return because the FMR regressions weight stocks equally.  The equally weighted market excess return is the intercept in the FMR regression when the characteristics are de-meaned in each cross section.  We could run weighted FMR regressions to achieve value weighting or something between equal and value weighting, but we do not explore that.} 
+
+ 
+
+\subsection{KPS}
+
+We use the same five characteristics to implement the \citet*{kps} (henceforth KPS) method.  Let $N$ denote the number of stocks. The KPS begins by standardizing each characteristic in each cross-section, replacing the raw characteristic values with percentiles and then subtracting 0.5 to get ranks between $-0.5$ and $+0.5$.  Let $C_t$ denote the $N \times 5$ matrix of rank-standardized characteristics at date $t$. 
+
+Let $L$ denote the number of KPS factors.  We begin with the $N \times 5$ matrix $C_t$ of rank-standardized characteristics defined above.  Each column of this matrix can be interpreted as a characteristic factor portfolio.  We augment this matrix with a column of constants.  Call the resulting $N \times 6$ matrix $Z_t$.  The returns on the columns of $Z_t$ from $t$ to $t+1$ are $f_{t+1}:= Z_t'R_{t+1}$ where $R_{t+1}$ denotes the $N$-vector of excess stock returns.  We estimate IPCA in rolling 360-month windows. The IPCA step at date $t$ uses the factor returns and characteristics over the past 360 months to compute a series of $L \times 6$ matrices $\{A_{t, s}\}_s$ which are functions of the characteristics at date $s$. The returns of the KPS factors estimated at date $t$ and realized at date $s+1$ are defined to be $F_{t, s+1} = A_{t, s} f_{s+1}$.  
+The six-factor KPS model does not employ dimension reduction and is the same as the FMR model run on rank-standardized characteristics.\footnote{In our implementation of the FMR model, we do not rank-standardize the characteristics.  Instead, we scale the FMR portfolios to be 100\% long and 100\% short.}
+
+\subsection{DKKM}
+
+We use the same five characteristics, along with the risk-free rate for the BGN model, to implement the \citet*{dkkm} (henceforth DKKM) method.  DKKM use random Fourier features to create potentially a very large number of factors.\footnote{\cite{dkkm} discuss complex models in general, and, as they point out, this is only one particular way to generate such a model.  See also \citet{kelly_malamud_2025}.}  We follow their recipe to form various sets of what we call DKKM factors, ranging from a six factor model to a model with 3,600 factors.  
+
+Let $M$ denote the number of DKKM factors. From $C_t$, we generate an $N \times M$ matrix of random characteristics as follows.\footnote{In BGN, we augment $C_t$ with a column equal to the risk-free rate, standardized by subtracting its mean dividing by its standard deviation in the 200 months of burn-in in the simulation. We abuse notation by calling this augmented matrix $C_t.$} Let $W$ denote an $(M/2) \times 5$ matrix whose entries are sampled from the standard normal distribution, and let $\gamma$ denote a length $M/2$ vector whose entries are sampled uniformly from $\{0.5, 0.6, \ldots, 1\}$.  We use the same $W$ and $\gamma$ for all $t$.  We work with the matrix $C_t(\gamma \odot W)'$, where $\gamma \odot W$ denotes element by element multiplication of  $\gamma$ with each column of $W$.  We compute an $N \times M$ matrix of random characteristics by taking sines and cosines of the elements of $C_t(\gamma \odot W)'$ and stacking the sines and cosines as separate columns.  
+We then rank standardize the columns, replacing the raw characteristic values with percentiles and then subtracting 0.5 to get ranks between $-0.5$ and $+0.5$.  Each column of the resulting matrix $\Phi_t$ can be interpreted as a long-short portfolio. The returns of the portfolios from
+$t$ to $t + 1$ are the DKKM factor realizations $F_{t+1}$ from $t$ to $t + 1.$ To allow the DKKM methodology to obtain a non-zero exposure to the firms in the economy, we augment $F$ with the value-weighted market return. 
+
+%\footnote{Unlike DKKM, we do not rank-standardize the random characteristics.}
+
+\subsection{Ridge Regression}\label{ss:ridge}
+
+The ridge regression is 
+\begin{equation}\label{ridge}
+  \min_\beta \quad \frac{1}{360} \sum_{i=0}^{359} \left(1 - \beta' F_{t-i}\right)^2 + \alpha \sum_{k = 1}^M \beta_k^2\,,
+\end{equation}
+where $\alpha$ is a penalty parameter.  The coefficient on the market return, $\beta_0$, is unpenalized. More penalization is needed when the number of factors is larger.  To get a sense for how the penalty should vary with the number of factors, consider doubling the number of factors by simply replicating each factor.  Then, to make $\beta'\beta$ small, we will want to split each beta evenly among the duplicate factors in each pair.  This reduces the sum of squared betas by $1/2$.  Therefore, to maintain the same penalization, we should double $\alpha$.  Hence, we set $\alpha = \kappa M$, where $M$ is the number of factors, and we vary $\kappa$.  If adding more factors is more effective than simply replicating factors, then, for each value of $\kappa$, we should see performance improve as $M$ increases.  We also look at what DKKM call ridgeless regression, which can be interpreted as the limit of the ridge regression as $\alpha \rightarrow 0$ (it is OLS when the number of factors is not larger than the number of time periods).  
+
+\section{Results}\label{sec:results}
+
+An important takeaway is that the performance of the DKKM model increases with the number of factors, provided the ridge penalty is sufficiently large, up to hundreds of factors, at which point it plateaus.  There is no material difference in performance between hundreds of factors and thousands of factors in the simple economic models that we study, but there is a notable difference in performance if we drop below hundreds of factors.  Furthermore, for the BGN, KP and GS models, and on several dimensions, the DKKM and KPS empirical models outperform FFC and FMR.  We document these points below.
+
+
+\subsection{Sharpe Ratios and HJ Distances} 
+
+We begin by analyzing the empirical models' depictions of the MVE portfolio and SDF in the BGN, KP and GS economic models. We report the average, across time and simulations, of the true conditional (unannualized) Sharpe Ratio of the estimated MVE portfolios $\hat \beta_t' F_{t+1}$ and the true conditional \citet{hj} (HJ) Distances of the  estimated SDFs $1-\hat \beta_t'F_{t+1}$ from the true SDF. 
+
+Table \ref{tab:fama} reports results for the FFC and FMR emprical models.  FMR has both a higher mean Sharpe Ratio and a lower mean HJ Distance than FFC in the BGN and GS models.  However, the results are reversed in the KP model.
+
+Table \ref{tab:dkkm} reports results for DKKM relative to FMR.  Outperformance by DKKM is represented by positive numbers for the Sharpe Ratio and negative numbers for the HJ Distance.  We see that the performance of DKKM is increasing in the penalty parameter $\kappa$ up to $\kappa=0.05$ in the BGN and KP models, after which it declines.  In the GS model, performance of DKKM is increasing until $\kappa = 1e-5.$ For all three models, there is a level of $\kappa$ for which performance is increasing in the number of factors, higlighting a virtue of complexity.  The best performance on either the Sharpe Ratio or the HJ Distance for either the BGN or KP model is achieved at $\kappa=0.1$ and 3,600 factors, and at $\kappa = 1e-4$ and 3,600 factors for the GS model.  These parameter combinations outperform the best performing of the FFC and FMR models on both metrics and in both economic models.  
+
+Figure~\ref{fig:dkkm} presents a visualization of how the performance of DKKM varies with the number of factors and with the penalization parameter $\kappa$.  The figure shows for sufficient levels of shrinkage, the DKKM model outperforms both FFC and FMR and a sufficiently large number of factors.   
+
+\input{fig_dkkm.tex}
+
+Table~\ref{tab:kps} shows how the performance of the KPS model varies with the number of factors and how its performance compares to FMR and DKKM.  Positive numbers indicate outperformance of KPS for the Sharpe Ratio, and negative numbers indicate outperformance for the HJ distance.  It is optimal to use two factors for the BGN and GS economies and three factors for the KP economy.  The best performing KPS model outperforms FMR on both metrics.  The best-performing KPS model outperforms the best-performing DKKM model in the BGN economy, but the reverse is true in the KP and GS economies.
+
+Figure~\ref{fig:ipca} shows how the performance of the KPS model varies with the number of factors and how it compares to the FFC and FMR models.  With either two or three factors, the KPS model outperforms both FFC and FMR on both metrics and in all three economic models.
+
+\input{fig_kps.tex}
+
+The Sharpe ratio of a portfolio is equal to minus its correlation with the SDF multiplied by the standard deviation of the SDF.  So, the Sharpe ratios of the portfolios $\hat \beta_t'F_t$ are proportional to the correlations of the estimated SDFs $1-\hat \beta'F_t$ with the true SDF.  Thus, in both the BGN and KP models, the DKKM and KPS empirical models produce estimated SDFs that are closer to the true SDF in the HJ Distance and have higher correlations with the true SDF than do the FFC and FMR models.  In the next subsection, we look at the cross-sectional correlations of the $\hat \beta'F_t$ portfolio weights with the true tangency portfolio weights, and we also look at the persistence of weights.
+
+\subsection{Portfolio Weights} 
+
+Another important goal of an empirical model is to estimate assets' exposure to systematic risks. Along this dimension, the machine-learning models of KPS and DKKM are superior to the simpler FFC and FMR models.
+
+To begin with, the true SDF weights in both economic models are quite persistent. We calculate this by fitting a first-order autoregression (AR(1)) separately for each firm and simulation; in Panel I of Table \ref{tab:sdf wt stats} we report the mean, median, and standard deviation of those AR(1) parameter estimates. For what follows, the mean and median are close and we discuss only the former. Panel I(a) shows that in BGN the average persistence of weights is 0.964, Panel I(b) shows that in KP the average persistence is 0.930, and Panel I(c) shows that in GS the average persistence is 0.940. The standard deviations are quite low in both models (0.023, 0.028 and 0.030, respectively), which tells us that for the majority of firms their SDF weight is quite persistent.
+
+Before moving onto the empirical models, let us consider what this tells us about economics. In these models, a firm’s return is related to aggregate risk through the firm-specific component of its state variables. In BGN, a firm-specific state is its collection of past projects still in operation, along with their risks; and, each project's idiosyncratic productivity state comes from an iid process. %; and, there is no explicit investment adjustment cost. 
+In KP, a firm-specific state is its capital stock comprised of past projects still in operation and their productivities; each firm's and each project's idiosyncratic productivity follows modestly persistent processes; and investment opportunities arrive fairly infrequently, on average. %; and, there is no explicit investment adjustment cost. 
+In both models, a firm's optimal investment choices lead its firm-specific state to only gradually change over time. The nature of firms' optimal choices, in either model, ensures a slow firm evolution. This is one force behind firms' persistent SDF weights.
+
+Both KPS and DKKM pick up this important economic feature. In BGN, KPS estimates an average SDF weight persistence of 0.961 and DKKM finds 0.846, both of which are large in magnitude and fairly close to the true 0.963. Meanwhile, the simpler FFC and FMR models struggle, with average persistences of 0.633 and 0.586, respectively. The story is similar for the KP model: its average persistence of 0.930 is close to what KPS (0.892) and DKKM (0.791) deliver, and noticeably higher than what FFC (0.581) and FMR (0.722) would suggest. In the GS model, all three of FMR (0.928), KPS (0.969), and DKKM (0.879) yield high implied weight persistences, which are near the true weight persistence (0.940). The simpler FFC model yields a lower persistence of 0.837, although it is still relatively high. Overall, the simpler empirical models struggle to identify that firms evolve only gradually in their relationship to the SDF.
+
+Furthermore, the standard deviations tell us that simple models tend to imply more firm heterogeneity in this dimension than the economic models actual have. Recall that for BGN and KP these standard deviations were 0.02--0.03. Across the models, for KPS the standard deviations are both about 0.01-0.05 and for DKKM they are 0.04-0.12: this is indicative of the machine-learning models triangulating the economic truth that most firms have very persistent SDF weights. Meanwhile, across the models, for FFC the standard deviations are 0.06-0.21 and for FMR there are 0.04-0.21: this is indicative that the simpler empirical models are implying a type of heterogeneity that does not actually exist, particularly in the BGN and KP economies.\footnote{The range of AR(1) estimates also bears this out. The minimum AR(1) parameter in BGN is 0.70: KPS gets 0.69, DKKM gets 0.24, FFC gets -0.04, and FMR gets -0.12. In KP it is 0.56: KPS gets 0.58, DKKM gets 0.11, FFC gets -0.09, and FMR gets -0.07. In GS it is 0.48: KPS gets 0.88, DKKM gets 0.53, FFC gets 0.23, and FMR gets 0.30.}
+
+Now we move to understanding the cross section of firms. This is one of main goals of the economic models we have considered: they are designed to explain why firms differ in their exposure to aggregate risks. In the models, firms are meaningfully heterogeneous in their SDF weights, as a direct function of their firm-specific state. Therefore, a mark of success for an empirical model is its ability to correctly distinguish firms' SDF weights on the basis of observable firm characteristics.
+
+Table \ref{tab:sdf wt stats} Panel (b) reports cross-sectional correlations. Specifically, for each month and simulation, we calculate the correlation of estimated weights to true weights, and we report the mean, median, and standard deviation of those. A broad-based, first observation is that the average cross-sectional correlations are below one. We view this as reflecting the sampling error that affects all empirical models, and so focus on a comparison of the correlations between estimators.
+
+We see a noteworthy separation between the machine-learning and simpler models. Looking first at Table \ref{tab:sdf wt stats} Panel II(a), we see KPS achieves an average cross-section correlation of 0.473, and DKKM is nearby at 0.432. There is modest variation in this cross-sectional performance, as the standard deviation (across months and simulations) is 0.065 and 0.11, respectively. Meanwhile, the simpler FFC and FMR models achieve average cross-sectional correlations that are 30--40\% lower at 0.308 and 0.324, respectively. These are also accompanied by greater variation of the cross-sectional correspondences, with standard deviations of 0.12 and 0.14, respectively.\footnote{Of course, standard deviation is symmetric and \emph{higher} cross-sectional correlations are good, so if the larger standard deviations of FFC and FMR are driven by positive skew, that would be good for them. This is not the case. The interquartile ranges (across months and simulations) is (0.23, 0.39) for FFC, (0.23, 0.42) for FMR. For KPS, it is (0.45, 0.52) and for DKKM it is (0.38, 0.50).} 
+
+In Panels II(b) and II(c), using the KP and GS models, respectively, the separation is not as large but still present. In the KP model KPS has an average cross-sectional correlation of 0.227 and DKKM is 0.278. The average correlations for FMR are lower at 0.174, and for FFC, they are similar to DKKM at 0.278.  In the GS model, KPS and DKKM yield high cross-sectional correlations of 0.91 and 0.80, respectively. In FFC, the correlation is smaller at 0.75, while for FMR, the correlation is similar to that of the complex models at 0.83. For both the KP and GS models, the evidence on variability is more mixed across simple and complex models. Overall, in both the KP and GS models, the complex empirical models, DKKM and KPS, obtain two of the three highest cross-sectional correlations with the true SDF portfolio weights. In the KP model, FMR performs relatively poorly along this dimension, while in the GS model, FFC performs relatively poorly along this dimension.
+
+The cross-sectional correlations demonstrate that machine-learning empirical models are superior at capturing the actual economic heterogeneity these models were built to explain. 
+
+% ANALYSIS TO COME: informational content of the firm characteristics, role of linearity
+
+\section{Conclusion}\label{sec:conclusion}
+
+In data simulated from different well-known economic models, we find that machine-learning estimators outperform simpler estimators at revealing the true SDF. Furthermore, we show that the estimates can be used to learn about the economics driving different firms' weights in the SDF. These results show that machine-learning estimators can uncover economic structure better than simpler estimators, even in simple environments reflecting only well-defined economic forces. Thus,  machine learned, complex estimates of the SDF in actual data hold the potential to sharpen our understanding of the economic forces driving firm heterogeneity, and hence cross-sectional asset pricing.
+
+
+\clearpage
+\appendixpage
+\begin{appendices}
+\numberwithin{equation}{section}
+
+\section{Berk, Green, and Naik (1999)}
+
+
+The SDF at date $t-1$ for pricing cash flows at $t$ is $M_t/M_{t-1}$, which is given by
+\begin{equation}\label{logsdf}
+\log M_{t} = \log M_{t-1} - r_{t-1} - \frac{1}{2}\sigma_m^2 + \sigma_m \varepsilon_{t}\,.
+\end{equation}
+The interest rate process is a \cite{vasicek} process:
+\begin{equation}\label{interestrate}
+r_{t} = r_{t-1} + \kappa(\theta - r_t) + \sigma_r \xi_{t}\,.
+\end{equation}
+Here, $\varepsilon$ and $\xi$ are sequences of independent standard normals that are contemporaneously correlated with each other, and $\sigma_m$, $\sigma_r$, $\kappa$, and $\theta$ are constants.  Let $\rho_{mr}$ denote the correlation between $\varepsilon_t$ and $\xi_t$.
+
+Each firm receives a single take-it-or-leave-it investment opportunity each period.  The cost of each investment opportunity is the same and is taken as the numeraire.  A project that is taken at time $s$ is alive and delivers cash flows at date $s+1$ with probability $1-\pi$ for a constant $\pi$.  Conditional on being alive at date $t$ for $t>s$, it is likewise alive and delivers cash flows at date $t+1$ with probability $1-\pi$.  Conditional on being alive at $t>s$, the cash flow at date $t$ of a project that was taken at date $s$ is given by
+\begin{equation}\label{cashflow}
+\log C_{st}^i = \overline{C} - \frac{1}{2} \sigma_{is}^2 +  \sigma_{is} \left(\rho_{is} \varepsilon_{t} + \sqrt{1 - \rho_{is}^2} \eta_{st}^i\right)\,,
+\end{equation}
+where $\overline{C}$ is a constant, $\sigma_{is}$ and $\rho_{is}$ are observed at date $s$, and the $\eta_{st}^i$ are independent standard normals that are independent of the $\varepsilon$ and $\xi$ sequences.  The correlation between the cash flow and  $\Delta \log M$ is $\rho_{is}$.  
+
+Following BGN, set $\beta_{is} = \sigma_m\sigma_{is}\rho_{is}$.   Following BGN, $\beta_{is}$ is drawn independently across time and across firms from a translated exponential distribution with support $(-\infty, \beta^*]$, for a constant $\beta^*$, and $\sigma_{is}$ is drawn from a uniform distribution with endpoints determined by $\beta_{is}/\sigma_m$ to ensure that $\rho_{is} = \beta_{is}/(\sigma_m\sigma_{is})$ is between $-1$ and $+1$.
+
+The operating cash flow of firm $i$ at date $t$ is
+$$\text{OCF}^i_t :=\sum_{s<t} C^{i}_{st}\chi^i_{st}\,,$$
+where $\chi^i_{st}$ is the indicator for the project that arrived at $s$ being alive at $t$.
+The free cash flow is 
+$$\text{FCF}^i_t = \text{OCF}^i_t - \chi^i_{tt}\,.$$
+Here, $\chi^i_{tt}$ is the indicator for the project that arrived at $t$ being taken at $t$.  Free cash flow is paid out to shareholders.
+
+The value at date $t$ of a project that arrived at $s<t$, after cash flows at date $t$ are realized, is
+$$V_{st}^i = \mathbb{E}_t \left[\sum_{u=t+1}^\infty \frac{M_u}{M_t}C_{su}^i \chi_{su}\right]$$
+BGN show that, conditional on the project being alive at $t$, 
+$$V_{st}^i = \E^{\overline{C} - \beta_{is}}D(r_t)$$
+where $D(r)$ denotes the value of a perpetual consol with coupons declining at rate $1-\pi$.  Thus, the value of assets in place at date $t$ for firm~$i$ is
+$$A^i_t :=\E^{\overline{C}}D(r_t)\sum_{s\le t}\chi^i_{st}\E^{-\beta_{is}}\,.$$
+
+The value of growth options is the same for each firm and depends on the interest rate.  Denote it by $J^*(r_t)$.  BGN show that 
+\begin{equation}
+J^*(r) = \E^{\overline{C}}\sum_{u=1}^\infty \sum_{k=1}^\infty \int_{-\infty}^{\beta^*} J(r, u, k, r^*_{\beta})f(\beta)\,\D \beta\,,
+\end{equation}
+where $J(r, u, k, r^*_\beta)$ denotes the value at date 0 when the interest rate is $r$ of a European call option maturing at $u$ on a discount bond maturing at $u+k$ with strike price determined by $r^*_\beta$, which is the solution of an implicit equation, and where $f$ denotes the translated exponential density function of each $\beta_{is}$ as described above.  Conditional on the strike price, the call option values have closed form solutions. 
+
+It follows that the excess return of firm $i$ from $t$ to $t+1$ is 
+\begin{equation}
+\frac{A^i_{t+1} + J^*(r_{t+1}) + \text{FCF}^i_{t+1}}{A^i_t + J^*(r_t)} - \E^{r_t}\,.
+\end{equation}
+
+Let $R_{t+1}$ denote the $N$--vector of excess stock returns from $t$ to $t+1$.  As discussed in the text, we can calculate a particular SDF by regressing the constant~1 on the excess returns, which means that the SDF is
+$$1 - \mathbb{E}_t[R_{t+1}]'\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}R_{t+1}\,.$$
+We need to compute the vector
+$$\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}\mathbb{E}_t[R_{t+1}]\,.$$
+Equivalently (in theory, though not numerically), we need to compute the solution $x$ to the system of linear equations $Ax=b$ where $A=\mathbb{E}_t[R_{t+1}R_{t+1}']$ and $b = \mathbb{E}_t[R_{t+1}]$.
+BGN calculate $\mathbb{E}_t[R_{t+1}]$.  The additional complication is to calculate the expectation of products and squares of excess returns and to solve the system of linear equations.
+
+To calculate the expectation of products and squares of excess returns, we need to evaluate the following integrals:
+\begin{equation} 
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} ((e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+)^2 f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} \int_{-\infty}^{\beta^*} (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+ (e^{ \overline{C}-\beta'} D(r_{t+1}) - 1)^+f(\beta)f(\beta')\,\D \beta \,\D \beta'\right]
+\end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[J^*(r_{t+1})^2\big] 
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[D(r_{t+1})^2\big] 
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[D(r_{t+1}) J^*(r_{t+1})\big]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} J^*(r_{t+1}) (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} D(r_{t+1}) (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}\label{A8}
+    \mathbb{E}_t\left[J^*(r_{t+1}) e^{\gamma \xi_{t+1}}\right]
+    \end{equation}
+\begin{equation}\label{A9}
+    \mathbb{E}_t\big[D(r_{t+1}) e^{\gamma \xi_{t+1}}\big]
+    \end{equation}
+\begin{equation} \label{A10} 
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+ e^{\gamma \xi_{t+1}}f(\beta)\,\D \beta\right]
+\end{equation}
+In \eqref{A8}--\eqref{A10}, $\gamma$ denotes $\sigma_{it}\rho_{it}\rho_{mr}$ and is treated as a constant, because it is known at date $t$. The conditional expectations are all integrals over the shock $\xi_{t+1}$ to the interest rate at date $t+1$. We compute any inner integrals over $\beta, \beta'$ analytically, for given values of $J^*(r_{t+1})$ and $D(r_{t+1})$, and then compute the outer integrals over $\xi_{t+1}$ by Gauss-Hermite quadrature.
+
+
+\section{Kogan and Papanikolaou (2014)}
+
+The economy-wide productivity parameters and the SDF process are as described in the text.  Firms acquire new projects at firm-specific arrival rates $\lambda_{it} = \lambda_i \times \tilde \lambda_{it}.$ Here, $\tilde \lambda_{it}$ follows a two-state continuous-time Markov chain, and $\lambda_i$ is a firm-specific constant drawn from a shifted negative log-uniform distribution. 
+
+Firm~$i$ chooses how much capital to invest in any project $j$.  If project $j$ of firm~$i$ arrives at date $s$ and firm~$i$ invests $K$, then firm~$i$ incurs an investment cost $z_s^{-1} x_s K$ at date $s$.  Subsequently, the project produces cash flows at rate 
+$$\epsilon_{it} u_{jt} x_t K^{\alpha}$$
+for $t>s$ until the project expires, which occurs at rate $\delta.$  The processes $\epsilon_{i}$ and $u_{j}$ are independent square-root processes with mean equal to 1. The process  $\epsilon_{i}$ is firm specific, while $u_{j}$ is specific to project $j$ of firm $i$, and $u_{js}=1$ if project $j$ arrives at date $s$.
+
+KP show that the market value of a project that arrived at date $s$ and is alive at date $t \ge s$, conditional on capital $K$ having been invested, is 
+\[
+\mathbb{E}_t \left[\int_{t}^{\infty}  \frac{M_\tau}{M_t} e^{- \delta(\tau - t)}\epsilon_{i\tau} u_{j\tau} x_\tau K^{\alpha} \,\D \tau \right] = A(\epsilon_{it}, u_{jt}) x_t K^{\alpha}\,,
+\]
+for a quadratic function $A$. When choosing how much to invest in a project, a firm trades off the present value of future cash flows with the investment cost. The optimal investment in project $j$ of firm~$i$ that arrives at time $s$ is 
+\[
+K_{ij} = (\alpha z_s A(\epsilon_{is}, 1))^{\frac{1}{1 - \alpha}}\,.
+\]
+
+As in BGN, the value of the firm is equal to the value of its assets in place plus the value of its growth options. The value of the assets in place at time $t$ is equal to the sum of the present values of live projects: 
+\[
+x_t \sum_{ j \in \mathcal J_{it}} A(\epsilon_{it}, u_{jt}) K_{ij}^{\alpha},
+\]
+where $\mathcal J_{it}$ is the set of projects that are alive at date $t$. 
+KP also show that the value of firm $i$'s growth options at time $t$ is equal to 
+\[z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{it}, \lambda_{it})\,,
+\]
+for a function $G$ that solves an ordinary differential equation. The total market value of the firm is 
+\[
+V^i_t = x_t \sum_{ j \in \mathcal J_{it}} A(\epsilon_{it}, u_{j t}) K_{ij}^{\alpha} + z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{it}, \lambda_{it})\,.
+\] 
+
+To simulate the model, we discretize it at a monthly frequency. We approximate the Poisson arrival rate and expiration of projects by a simple Bernoulli approximation, and we use closed-form transition distributions to discretize the other continuous-time processes that describe the model. Without loss of generality, take one unit of time to equal a month. Operating cash flows from date $t-1$ to date $t$ are 
+\[
+\text{OCF}^i_t =
+\sum_{j \in \mathcal J_{i, t-1}} \epsilon_{it} u_{jt} x_{t} K_{ij}^{\alpha}\, ,
+\]
+Let $\chi_{it}$ denote the indicator function for whether a project arrives to firm $i$ during the period $(t-1, t)$.  We assume only one project can arrive during each period, and, if a project arrives, it arrives at date $t$.  Then, free cash flows are
+\[
+\text{FCF}^i_t := \text{OCF}^i_t- \chi_{it}z_{t}^{-1} x_{t} (\alpha z_t A(\epsilon_{it}, 1))^{\frac{1}{1 - \alpha}}\,.
+\]
+Firm $i$'s return between dates $t$ and $t+1$ is
+\begin{equation*}
+R_{i,t+1} = \frac{V^i_{t+1} + \text{FCF}_{t+1}^i}{V^i_t}\,.
+\end{equation*}
+
+As in BGN, we need to compute the vector
+$$\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}\mathbb{E}_t[R_{t+1}]\,,$$
+where $R_{t+1}$ denotes the $N$--vector of excess stock returns from $t$ to $t+1$. Evaluating the first two moments of returns requires computing several expectations numerically:
+\begin{equation}\label{B1}  
+\mathbb{E}_t \left[A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}} A(\epsilon_{i, t+1}, u_{s, t+1})\right]
+\end{equation}
+\begin{equation} 
+\mathbb{E}_{t} \left[A(\epsilon_{i, t+1}, 1)^{\frac{2}{1 - \alpha}}\right]
+\end{equation}
+\begin{equation}
+\mathbb{E}_t\left[ A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}}\right]
+\end{equation}
+\begin{equation}\label{B4}
+E_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1})\right]
+\end{equation}
+\begin{equation}  \label{B5} 
+\mathbb{E}_t \left[A(\epsilon_{i, t+1}, 1) G(\epsilon_{i, t+1}, \lambda_{i, t+1})\right]
+\end{equation}
+\begin{equation} \label{B6} 
+\mathbb{E}_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1})^2\right]
+\end{equation}
+\begin{equation}\label{B7} 
+\mathbb{E}_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1}) A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}}\right].
+\end{equation} 
+These expectations integrate over the distribution of $\epsilon_{i, t+1}$ given $\epsilon_{i, t}$, using closed-form expressions for the discrete transition function of a square-root process and standard numerical integration routines in Python. The expectation \eqref{B1} also integrates over the conditional distribution of $u_{s, t+1}$, while the expectations \eqref{B4}-\eqref{B7} also integrate over the conditional distribution of $\lambda_{i, t+1}.$
+
+\section{Gomes and Schmid (2021)}
+
+In our implementation of GS, aggregate productivity is the only aggregate state variable. It evolves according to an AR(1) process:
+\begin{equation*}
+    x_t = (1 - \rho_x) \bar x + \rho_x x_{t-1} + \sigma_x \nu_{xt}\, . 
+\end{equation*}
+The SDF at date $t-1$ for pricing cash flows at $t$ is $M_t/M_{t-1}$, which we assume is given by
+\begin{equation}\label{logsdf}
+\log M_{t} = \log M_{t-1} - r - \frac{1}{2}\gamma_x^2 + \gamma_x \nu_{xt}\,.
+\end{equation}
+This assumption is a simplification relative to GS, who assume pricing is determined by market clearing with an optimizing household sector.
+
+Each firm maintains a capital stock $k$. The productivity of firms' capital is determined both by aggregate productivity $x$, and by firm-specific productivity $z$, which evolves according to an independent AR(1) process. Each period, each firm receives a single take-it-or-leave-it investment opportunity.  The cost of investment $i$ is drawn from a uniform distribution $H$. If a firm invests in a given period, its capital stock is scaled up by $g$. If not, its capital stock remains unchanged. Firms invest, denoted by a dummy $\chi$ set to equal 1, if their investment cost is sufficiently low. Each firm also pays a maintenance cost equal to a fraction $\delta$ of capital per period.
+
+Firms can access debt markets. As mentioned in the text, we assume there are no equity financing costs. Firms hold perpetual bonds which pay a coupon $b$ each period. If firms receive a refinancing shock with probability $\zeta$, they repurchase all outstanding debt and issue new debt at a proportional cost $\kappa_b.$ The occurrence of a refinancing shock is denoted by a dummy $\eta$ equal to 1 with probability $\zeta$.
+
+A firm's equity value determined before its investment cost is realized is denoted $V(k, b, z, x)$. At the start of any period, equityholders strategically default if $V(k, b, z, x)$ is negative. Default is characterized by a cutoff for firm-specific productivity, $\tilde z(k, b, \eta, x)$, below which default occurs. If a firm defaults, debtholders receive $\phi (k + (\exp(x + z) - \delta) k),$ which is equal to a fraction $\phi$ of the firm's assets plus its current cash flows.
+
+Given an effective tax rate $\tau$, operating cash flows are given by \[
+\text{OCF}(k, z, x) = (1 - \tau) (\exp(x + z) - \delta)k\, .
+\]
+Moreover, free cash flows of a firm are given by \[
+\text{FCF}(k, b, z, \eta, x, i) = \text{OCF}(k, z, x) - (1 - \tau) b -  \chi k i\, . 
+\]
+
+GS express the market values of equity and debt in terms of Bellman equations. The Bellman equation for the market value of debt, denoted $B(k, b, z, x)$, is given by:
+\begin{multline*}
+B(k, b, z,x) \\
+= \mathbb{E} \left[ M(x, x')\left(\mathbbm{1}_{z' \geq \bar z(k', b, \eta', x')} [b + B(k', b, z', x')] + \mathbbm{1}_{z' < \bar z(k', b, \eta', x')} \phi (1 - \delta \exp(x' + z')) k'\right) \right]\,.
+\end{multline*}
+We suppress time subscripts and use primes to denote random variables over which the expectation is taken. The two terms inside the integral denote payoffs if default does and does not occur. 
+
+If a firm invests, the market value of its equity is equal to 
+\begin{multline*}
+V_I(k, b, z, \eta, x, i) = \max_{b'}\left[\text{OCF}(k, z, x) - (1 - \tau) b - ik\right.\\
+\left.+ \eta[(1 - \kappa_b) B(gk, b', z, x) - B(gk, b, z, x)] \right.\\
+\left.+  \mathbb{E}\left[ M(x, x') \mathbbm{1}_{z \geq z(gk, b', \eta', s')} V(k', b', z', \eta', x')\right]\right]\, .
+\end{multline*}
+Denote the market value of equity if the firm does not invest by $V_0(k, b, z, \eta, x),$ which satisfies a similar Bellman equation. The investment decision is determined by an optimal cutoff for the investment cost, $\bar i(k, b, z, \eta, x),$ below which investment is undertaken. 
+
+The market value of equity $V$ before the investment cost is realized is the expected value of the maximum of $V_0, V_I$, where the expectation is taken over the investment cost. The firm defaults if and only if this expected value is negative. 
+
+The solution of the model is simplified slightly by homogeneity of prices in $(k, b).$ Nonetheless, the above Bellman equations are solved numerically, by alternating between value iteration for the market price of debt and the market price of equity. The stability of the alternating value iteration is improved substantially by adding noise to the default outcome (or equivalently, the default cutoff $\tilde z$) (e.g.\ \cite{Chatterjee2012, GS21}). Specifically, future market prices $V$ are replaced by $V + \epsilon$, where $\epsilon$ is a small iid noise term that is integrated over. 
+
+We compute the return of a firm from date $t$ to $t+1$ as 
+\begin{equation*}
+ \frac{V_{t+1} }{ V_{t} - \mathbb{E}_t\text{FCF}_t -\eta[(1 - \kappa_b) B_{t+1} - B_t]},
+\end{equation*}
+where we have replaced the arguments of cash flows, equity values and debt values with time subscripts. Because $V$ is computed before the investment cost is realized, we take the expectation over the date $t$ investment cost before subtracting free cash flows in the denominator.
+
+Let $R_{t+1}$ denote the $N$--vector of excess stock returns from $t$ to $t+1$. Once again, we need to compute the vector
+$$\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}\mathbb{E}_t[R_{t+1}]\,.$$ This requires numerical computation of expectations involving the functions $V$ and $B$. These expectations integrate over realizations of aggregate productivity, firm-specific productivities, firm-specific investment costs, and refinancing shocks. Given numerical solutions for $V$ and $B$, integrals over the firm-specific investment costs and refinancing shocks can be computed analytically. Integrals over aggregate and firm-specific productivities are computed by Gauss-Hermite quadrature.
+
+\end{appendices}
+\clearpage
+\bibliography{bibliography}
+\clearpage
+
+
+\input{Tables (main)/for tex/fama_comparisons.tex} \clearpage
+\input {Tables (main)/for tex/dkkm_comparisons.tex}
+\clearpage
+\input{Tables (main)/for tex/kps_comparisons.tex}
+\clearpage
+\input{Tables (main)/for tex/sdf_weight_statistics_2.tex}
+
+\end{document}
+
+    

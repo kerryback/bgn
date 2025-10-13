@@ -1,0 +1,172 @@
+\clearpage
+\appendixpage
+\begin{appendices}
+\numberwithin{equation}{section}
+\numberwithin{lemma}{section}
+
+
+
+\section{Berk, Green, and Naik (1999)}
+
+
+The SDF at date $t-1$ for pricing cash flows at $t$ is $M_t/M_{t-1}$, which is given by
+\begin{equation}\label{logsdf}
+\log M_{t} = \log M_{t-1} - r_{t-1} - \frac{1}{2}\sigma_m^2 + \sigma_m \varepsilon_{t}\,.
+\end{equation}
+The interest rate process is a \cite{vasicek} process:
+\begin{equation}\label{interestrate}
+r_{t} = r_{t-1} + \kappa(\theta - r_t) + \sigma_r \xi_{t}\,.
+\end{equation}
+Here, $\varepsilon$ and $\xi$ are sequences of independent standard normals that are contemporaneously correlated with each other, and $\sigma_m$, $\sigma_r$, $\kappa$, and $\theta$ are constants.  Let $\rho_{mr}$ denote the correlation between $\varepsilon_t$ and $\xi_t$.
+
+Each firm receives a single take-it-or-leave-it investment opportunity each period.  The cost of each investment opportunity is the same and is taken as the numeraire.  A project that is taken at time $s$ is alive and delivers cash flows at date $s+1$ with probability $1-\pi$ for a constant $\pi$.  Conditional on being alive at date $t$ for $t>s$, it is likewise alive and delivers cash flows at date $t+1$ with probability $1-\pi$.  Conditional on being alive at $t>s$, the cash flow at date $t$ of a project that was taken at date $s$ is given by
+\begin{equation}\label{cashflow}
+\log C_{st}^i = \overline{C} - \frac{1}{2} \sigma_{is}^2 +  \sigma_{is} \left(\rho_{is} \varepsilon_{t} + \sqrt{1 - \rho_{is}^2} \eta_{st}^i\right)\,,
+\end{equation}
+where $\overline{C}$ is a constant, $\sigma_{is}$ and $\rho_{is}$ are observed at date $s$, and the $\eta_{st}^i$ are independent standard normals that are independent of the $\varepsilon$ and $\xi$ sequences.  The correlation between the cash flow and  $\Delta \log M$ is $\rho_{is}$.  
+
+Following BGN, set $\beta_{is} = \sigma_m\sigma_{is}\rho_{is}$.   Following BGN, $\beta_{is}$ is drawn independently across time and across firms from a translated exponential distribution with support $(-\infty, \beta^*]$, and $\sigma_{is}$ is drawn from a uniform distribution with endpoints determined by $\beta_{is}/\sigma_m$ to ensure that $\rho_{is} = \beta_{is}/(\sigma_m\sigma_{is})$ is a valid correlation.
+
+The operating cash flow of firm $i$ at date $t$ is
+$$\text{OCF}^i_t :=\sum_{s<t} C^{i}_{st}\chi^i_{st}\,,$$
+where $\chi^i_{st}$ is the indicator for the project that arrived at $s$ being alive at $t$.
+The free cash flow is 
+$$\text{FCF}^i_t = \text{OCF}^i_t - \chi^i_{tt}\,.$$
+Here, $\chi^i_{tt}$ is the indicator for the project that arrived at $t$ being taken at $t$.  Free cash flow is paid out to shareholders.
+
+The value at date $t$ of a project that arrived at $s<t$, after cash flows at date $t$ are realized, is
+$$V_{st}^i = \mathbb{E}_t \left[\sum_{u=t+1}^\infty \frac{M_u}{M_t}C_{su}^i \chi_{su}\right]$$
+BGN show that, conditional on the project being alive at $t$, 
+$$V_{st}^i = \E^{\overline{C} - \beta_{is}}D(r_t)$$
+where $D(r)$ denotes the value of a perpetual consol with coupons declining at rate $1-\pi$.  Thus, the value of assets in place at date $t$ for firm~$i$ is
+$$A^i_t :=\E^{\overline{C}}D(r_t)\sum_{s\le t}\chi^i_{st}\E^{-\beta_{is}}\,.$$
+
+The value of growth options is the same for each firm and depends on the interest rate.  Denote it by $J^*(r_t)$.  BGN show that 
+\begin{equation}
+J^*(r) = \E^{\overline{C}}\sum_{u=1}^\infty \sum_{k=1}^\infty \int_{-\infty}^{\beta^*} J(r, u, k, r^*_{\beta})f(\beta)\,\D \beta\,,
+\end{equation}
+where $J(r, u, k, r^*_\beta)$ denotes the value at date 0 when the interest rate is $r$ of a European call option maturing at $u$ on a discount bond maturing at $u+k$ with strike price determined by $r^*_\beta$, which is the solution of an implicit equation, and where $f$ denotes the translated exponential density function of each $\beta_{is}$ as described above.  Conditional on the strike price, the call option values have closed form solutions. 
+
+It follows that the excess return of firm $i$ from $t$ to $t+1$ is 
+\begin{equation}
+\frac{A^i_{t+1} + J^*(r_{t+1}) + \text{FCF}^i_{t+1}}{A^i_t + J^*(r_t)} - \E^{r_t}\,.
+\end{equation}
+
+Let $R_{t+1}$ denote the $N$--vector of excess stock returns from $t$ to $t+1$.  As discussed in the text, we can calculate a particular SDF by regressing the constant~1 on the excess returns, which means that the SDF is
+$$1 - \mathbb{E}_t[R_{t+1}]'\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}R_{t+1}\,.$$
+We need to compute the vector
+$$\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}\mathbb{E}_t[R_{t+1}]\,.$$
+Equivalently (in theory, though not numerically), we need to compute the solution $x$ to the system of linear equations $Ax=b$ where $A=\mathbb{E}_t[R_{t+1}R_{t+1}']$ and $b = \mathbb{E}_t[R_{t+1}]$.
+BGN calculate $\mathbb{E}_t[R_{t+1}]$.  The additional complication is to calculate the expectation of products and squares of excess returns and to solve the system of linear equations.
+
+To calculate the expectation of products and squares of excess returns, we need to evaluate the following integrals:
+\begin{equation} 
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} ((e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+)^2 f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} \int_{-\infty}^{\beta^*} (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+ (e^{ \overline{C}-\beta'} D(r_{t+1}) - 1)^+f(\beta)f(\beta')\,\D \beta \,\D \beta'\right]
+\end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[J^*(r_{t+1})^2\big] 
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[D(r_{t+1})^2\big] 
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\big[D(r_{t+1}) J^*(r_{t+1})\big]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} J^*(r_{t+1}) (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} D(r_{t+1}) (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+f(\beta)\,\D \beta\right]
+    \end{equation}
+\begin{equation}\label{A8}
+    \mathbb{E}_t\left[J^*(r_{t+1}) e^{\gamma \xi_{t+1}}\right]
+    \end{equation}
+\begin{equation}\label{A9}
+    \mathbb{E}_t\big[D(r_{t+1}) e^{\gamma \xi_{t+1}}\big]
+    \end{equation}
+\begin{equation} \label{A10} 
+    \mathbb{E}_t\left[\int_{-\infty}^{\beta^*} (e^{\overline{C}-\beta}  D(r_{t+1}) - 1)^+ e^{\gamma \xi_{t+1}}f(\beta)\,\D \beta\right]
+\end{equation}
+In \eqref{A8}--\eqref{A10}, $\gamma$ denotes $\sigma_{it}\rho_{it}\rho_{mr}$ and is treated as a constant, because it is known at date $t$. The conditional expectations are all integrals over the shock $\xi_{t+1}$ to the interest rate at date $t+1$. We compute any inner integrals over $\beta, \beta'$ analytically, for given values of $J^*(r_{t+1})$ and $D(r_{t+1})$, and then compute the outer integrals over $\xi_{t+1}$ by Gauss-Hermite quadrature.
+
+
+\section{Kogan and Papanikolaou (2014)}
+
+The model has two aggregate state variables: a disembodied productivity parameter $x_t$ that affects the productivity of all capital, and a parameter $z_t$ that affects only the productivity of newly installed capital. These variables evolve as
+\begin{align*}
+\D x_t &= \mu_x x_t \,\D t + \sigma_x x_t \,\D B_{xt} \\
+\D z_t &= \mu_z z_t \,\D t + \sigma_z z_t \,\D B_{zt}\,.
+\end{align*}
+Here, $B_x$ and $B_z$ are independent Brownian motions.  There are also firm-specific and project-specific productivity parameters that are independent square-root processes.  The SDF process is given by 
+\[
+\frac{\D M_t}{M_t} = -r \,\D t - \gamma_x \,\D B_{xt} - \gamma_z \,\D B_{zt}\,.
+\]
+
+Firms acquire new projects at firm-specific arrival rates $\lambda_{it} = \lambda_i \times \tilde \lambda_{it}.$ Here, $\tilde \lambda_{it}$ follows a two-state continuous-time Markov chain, and $\lambda_i$ is a firm-specific constant drawn from a shifted negative log-uniform distribution. Firm~i chooses how much capital $K_{j}$ to invest in any project $j$.  If project~$j$ arrives at date $s$ and firm~$i$ invests $K_{j}$, then it incurs an investment cost $z_s^{-1} x_s K_{j}$ at date $j$.  Subsequently, the project produces flow output equal to $\epsilon_{it} u_{jt} x_t K_j^{\alpha}$ for $t>s$ until the project expires, which occurs at rate $\delta.$  The processes $\epsilon_{i}$ and $u_{j}$ are independent square-root processes with mean equal to 1. The process  $\epsilon_{i}$ is firm specific, while $u_{j}$ is specific to project $j$ of firm $i$, and $u_{js}=1$ if project $j$ arrives at date $s$.
+
+KP show that the market value of project $j$ that is alive at time $t$, the present value of its cash flows, is 
+\[
+\mathbb{E}_t \left[\int_{t}^{\infty} e^{- \delta(\tau - t)} \frac{M_\tau}{M_t} \epsilon_{i\tau} u_{j\tau} x_\tau K_j^{\alpha} \,\D \tau \right] = A(\epsilon_{it}, u_{jt}) x_t K_j^{\alpha}\,,
+\]
+for a quadratic function $A$. When choosing it optimal capital allocation to a project, a firm trades off the present value of future cash flows with the investment cost. The optimal investment in project $j$ that arrives at time $s$ is 
+\[
+K_{ij} = (\alpha z_s A(\epsilon_{is}, 1))^{\frac{1}{1 - \alpha}}\,.
+\]
+
+As in BGN, the value of the firm is equal to the value of its assets in place plus the value of its growth options. The value of the assets in place at time $t$ is equal to the sum of the present values of live projects: 
+\[
+x_t \sum_{ j \in \mathcal J_{it}} A(\epsilon_{it}, u_{jt}) K_{ij}^{\alpha},
+\]
+where $\mathcal J_{it}$ is the set of projects that are alive at date $t$. 
+KP also show that the value of firm $i$'s growth options at time $t$ is equal to 
+\[z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{it}, \lambda_{it})\,,
+\]
+for a function $G$ that solves an ordinary differential equation. The total market value of the firm is 
+\[
+V_{it} = x_t \sum_{ j \in \mathcal J_{it}} A(\epsilon_{it}, u_{j t}) K_{ij}^{\alpha} + z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{it}, \lambda_{it})\,.
+\] 
+
+To simulate the model, we discretize it at a monthly frequency. We approximate the Poisson arrival rate and expiration of projects by a simple Bernoulli approximation, and we use closed-form transition distributions to discretize the other continuous-time processes that describe the model. Without loss of generality, take one unit of time in the continuous-time model to equal a month. Operating cash flows from date $t-1$ to date $t$ are 
+\[
+\text{OCF}^i_t :=
+\sum_{j \in \mathcal J_{t-1, i} \epsilon_{it} u_{jt}^i x_{t} K_{ij}^{\alpha}\, ,
+\]
+while free cash flows are
+\[
+\text{FCF}^i_t := \text{OCF}^i_t- \mathbbm{1}_{|\mathcal S_{t}^i| > |\mathcal S_{t-1}^i|}z_{t}^{-1} x_{t} K_{t}^i\,.
+\]
+The indicator function is equal to one if an additional project is acquired between time $t-1$ and time $t$.
+Discrete returns between dates $t  - 1$ and $t$ are given by 
+\begin{equation*}
+\frac{V_{it} + \text{FCF}_t^i}{V_{i ,t-1}}\,.
+\end{equation*}
+
+As in BGN, we need to compute the vector
+$$\mathbb{E}_t[R_{t+1}R_{t+1}']^{-1}\mathbb{E}_t[R_{t+1}]\,,$$
+where $R_{t+1}$ denotes the $N$--vector of excess stock returns from $t$ to $t+1$. Evaluating the first two moments of discrete-time returns requires computing several expectations numerically:
+\begin{equation}\label{B1}  
+\mathbb{E}_t \left[A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}} A(\epsilon_{i, t+1}, u_{s, t+1})\right]
+\end{equation}
+\begin{equation} 
+\mathbb{E}_{t} \left[A(\epsilon_{i, t+1}, 1)^{\frac{2}{1 - \alpha}}\right]
+\end{equation}
+\begin{equation}
+\mathbb{E}_t\left[ A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}}\right]
+\end{equation}
+\begin{equation}\label{B4}
+E_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1})\right]
+\end{equation}
+\begin{equation}  \label{B5} 
+\mathbb{E}_t \left[A(\epsilon_{i, t+1}, 1) G(\epsilon_{i, t+1}, \lambda_{i, t+1})\right]
+\end{equation}
+\begin{equation} \label{B6} 
+\mathbb{E}_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1})^2\right]
+\end{equation}
+\begin{equation}\label{B7} 
+\mathbb{E}_t \left[G(\epsilon_{i, t+1}, \lambda_{i, t+1}) A(\epsilon_{i, t+1}, 1)^{\frac{1}{1 - \alpha}}\right].
+\end{equation} 
+These expectations integrate over the distribution of $\epsilon_{i, t+1}$ given $\epsilon_{i, t}$, using closed-form expressions for the discrete transition function of a square-root process and standard numerical integration routines in Python. The expectation \eqref{B1} also integrates over the conditional distribution of $u_{s, t+1}$, while the expectations \eqref{B4}-\eqref{B7} also integrate over the conditional distribution of $\lambda_{i, t+1}.$
+

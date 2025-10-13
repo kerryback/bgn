@@ -1,0 +1,540 @@
+
+\clearpage
+\appendix
+
+\renewcommand{\thepage}{A.\arabic{page}}
+\renewcommand{\theequation}{A.\arabic{equation}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\renewcommand{\thetable}{A.\arabic{table}}
+\setcounter{page}{1}
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\section*{Appendix}
+
+\section{\cite*{bgn}}
+
+In the \cite{bgn} model, firms receive investment opportunities every period. Projects that arrive at time $s$ deliver cash flows from dates $s+1$ onwards until random project death. The date $t$ cash flow of firm $i$'s project that arrived at time $s$ can be written as \[
+\log C_{s, t}^i = \log \hat C - \frac{1}{2} \sigma_{i, s}^2 +  \sigma_{i, s} (\rho_{i, s} \nu_{t} + \sqrt{1 - \rho_{i, s}^2} \eta_{s, t}^i),
+\]
+where $\eta$ is independent across time and firms, of $\nu$, and of any other shocks in the model. $\nu$ is the shock to the SDF. 
+
+Write the shock to the SDF as $\nu_t = \rho_{z,r} \xi_t + \sqrt{1 - \rho_{z, r}^2} \mu_t,$ for some standard normal shock $\mu_t$, independent of all other shocks in the model. Recall $\xi_t$ is the shock to interest rates. Thus, the correlation between shocks to cash flows and interest rates is $\rho_{i, s} \rho_{z, r}$ and arises entirely from their correlations with the SDF process.
+
+Let $R_{t+1}$ denote the length $N+1$ vector of returns, the risk free return appended to the risky returns.
+For an SDF $m_{t+1}$, and an SDF projection $R_{t+1}' \theta$, we have\[
+E_t[R_{t+1}(m_{t+1} - R_{t+1}' \theta)] = 0 \implies
+m_{t+1}^{proj} = R_{t+1}^T E_t[R_{t+1} R_{t+1}^T]^{-1} \iota.
+\]
+Our goal is primarily to compute the SDF projection. The primary difficult is computing the second moment of returns  E_t[R_{t+1} R_{t+1}^T].
+
+\subsection{Returns}
+Firm $i$ has return \[
+R_{t+1}^i = \frac{A_{t+1}^i + I \hat C J^*[r_{t+1}] + CF_{t+1}^i - I \chi_{i, t+1}}{A_{t}^i + I \hat C J^*[r_t]},
+\]
+where, $CF$ denotes cash flows from projects,
+\[
+CF_{t+1}^i  = I \sum_{s = 0}^t \chi_{s, t+1}^i C_{s, t+1}^i.
+\]
+$A_{t+1}^i$ is the value of assets in place, and equals 
+\[
+I \hat C D[r_{t+1}] \sum_{s = 0}^{t+1} \chi_{s, t+1}^i e^{- \beta_{i, s}}.
+\]
+Note $\chi_{s, t}^i$ is one if the project starting at $s$ is alive at time $t$ and 0 otherwise. $\pi$ is the probability of a project staying alive across time periods. Even though $\chi_{s, s}^i = 1$ if the project is undertaken, $\chi_{s, s+1}$ will be 0 with probability $1 - \pi$.
+
+Using these expressions, firm $i$'s return is  
+\[
+R_{t+1}^i = \frac{I \hat C J^*[r_{t+1}] + I \hat C D[r_{t+1}] \sum_{s = 0}^{t} \chi_{s, t+1}^i e^{- \beta_{i, s}} + I( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ +  I \sum_{s = 0}^t \chi_{s, t+1}^i C_{s, t+1}^i}{A_t^i + I \hat C J^*[r_t]}.
+\]
+Substituting for the project cash flows, this is 
+\begin{multline*}
+\frac{I \hat C J^*[r_{t+1}]+  I( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ }{A_t^i + I \hat C J^*[r_t]}\\
++ \frac{ I \hat C \sum_{s = 0}^t \chi_{s, t+1}^i  (D[r_{t+1}] e^{- \beta_{i, s}} + \exp( - \frac{1}{2}\sigma_{i, s}^2 +  \sigma_{i, s} (\rho_{i, s} \nu_{t+1} + \sqrt{1 - \rho_{i, s}^2} \eta_{s, t+1}^i)))}{A_t^i + I \hat C J^*[r_t]}.
+\end{multline*}
+If $R_{t+1}^f$ is a risk-free asset, and $R_{t+1}^i$ denotes a risky asset, i.e., a firm's return,
+\begin{multline*}
+E_t[R_{t+1}^i  R_{t+1}^f] (A_t^i + I \hat C J^*[r_t]) = R^f( I \hat C E_t J^*[r_{t+1}] + \pi A_t^i E_t \frac{D[r_{t+1}]}{D[r_t]}\\+ E_t( I ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+) + I \hat C \sum_{s =0}^t \pi\chi_{s, t}^i).
+\end{multline*}
+
+\subsection{Second Moment of Returns}
+If $i, j$ index different firms,
+{\footnotesize
+\begin{align*}
+&E_t [R_{t+1}^i  R_{t+1}^j] (A_t^i + I \hat C J^*[r_t])(A_t^j + I \hat C J^*[r_t])  =I^2 \hat C^2E_t( J^*[r_{t+1}]^2)  \\
+&+I^2 E_t ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ ( e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+  \\
+&+ I^2 \hat C^2 E_t \sum_{s_1, s_2 = 0}^t Y_{s_1, t+1}^i Y_{s_2, t+1}^j \chi_{s_1, t}^i \chi_{s_2, t}^j (D[r_{t+1}])^2 e^{- \beta_{i, s_1} - \beta_{j, s_2}} \\
+ &+ I^2 \hat C^2 E_t \sum_{s_1, s_2 = 0}^t Y_{s_1, t+1}^i Y_{s_2, t+1}^j \chi_{s_1, t}^i \chi_{s_2, t}^j \\
+&\times \exp( - \frac{1}{2}(\sigma_{i, s_1}^2 +\sigma_{j, s_2}^2) +  (\sigma_{i, s_1} \rho_{i, s_1} +  \sigma_{j, s_2} \rho_{j, s_2}) \nu_{t+1} + \sigma_{i, s_1}\sqrt{1 - \rho_{i, s_1}^2} \eta_{s_1, t+1}^i +  \sigma_{j, s_2}\sqrt{1 - \rho_{j, s_2}^2} \eta_{s_2, t+1}^j )\\
+& + I^2 \hat C^2 E_t \sum_{s_1, s_2 = 0}^t Y_{s_1, t+1}^i Y_{s_2, t+1}^j \chi_{s_1, t}^i \chi_{s_2, t}^j D[r_{t+1}] e^{- \beta_{j, s_2}} \exp( - \frac{1}{2}\sigma_{i, s_1}^2 +  \sigma_{i, s_1} (\rho_{i, s_1} \nu_{t+1} + \sqrt{1 - \rho_{i, s_1}^2} \eta_{s_1, t+1}^i))  \\
+&+ I^2 \hat C^2 E_t \sum_{s_1, s_2 = 0}^t Y_{s_1, t+1}^i Y_{s_2, t+1}^j \chi_{s_1, t}^i \chi_{s_2, t}^j D[r_{t+1}] e^{- \beta_{i, s_1}} \exp( - \frac{1}{2}\sigma_{j, s_2}^2 +  \sigma_{j, s_2} (\rho_{j, s_2} \nu_{t+1} + \sqrt{1 - \rho_{j, s_2}^2} \eta_{s_2, t+1}^j)) \\
+&+I^2 \hat C  E_t J^*[r_{t+1}] (( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ + (e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+)  \\
+&+ I^2 \hat C^2 E_t J^*[[r_{t+1}] \sum_{s = 0}^t \chi_{s, t+1}^i  (D[r_{t+1}] e^{- \beta_{i, s}} + \exp( - \frac{1}{2}\sigma_{i, s}^2 +  \sigma_{i, s} (\rho_{i, s} \nu_{t+1} + \sqrt{1 - \rho_{i, s}^2} \eta_{s, t+1}^i)))  \\
+&+ I^2 \hat C^2 E_t J^*[r_{t+1}] \sum_{s = 0}^t \chi_{s, t+1}^j  (D[r_{t+1}] e^{- \beta_{j, s}} + \exp( - \frac{1}{2}\sigma_{j, s}^2 +  \sigma_{j, s} (\rho_{j, s} \nu_{t+1} + \sqrt{1 - \rho_{j, s}^2} \eta_{s, t+1}^j)))  \\
+&+ I^2 \hat C E_t( e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+ \sum_{s = 0}^t \chi_{s, t+1}^i  (D[r_{t+1}] e^{- \beta_{i, s}} + \exp( - \frac{1}{2}\sigma_{i, s}^2 +  \sigma_{i, s} (\rho_{i, s} \nu_{t+1} + \sqrt{1 - \rho_{i, s}^2} \eta_{s, t+1}^i)))  \\
+&+ I^2 \hat C E_t ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+\sum_{s = 0}^t \chi_{s, t+1}^j  (D[r_{t+1}] e^{- \beta_{j, s}} + \exp( - \frac{1}{2}\sigma_{j, s}^2 +  \sigma_{j, s} (\rho_{j, s} \nu_{t+1} + \sqrt{1 - \rho_{j, s}^2} \eta_{s, t+1}^j))) . 
+\end{align*}
+}
+This can be rewritten as to 
+\begin{align*}
+&E_t[R_{t+1}^i  R_{t+1}^j] (A_t^i + I \hat C J^*[r_t])(A_t^j + I \hat C J^*[r_t])  =I^2 \hat C^2 E_t(J^*[r_{t+1}]^2) \\
+&+I^2 E_t ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ ( e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+   \\
+&+ I^2 \hat C^2 E_t (D[r_{t+1}])^2 \sum_{s_1, s_2 = 0}^t \pi^2\chi_{s_1, t}^i \chi_{s_2, t}^j  e^{- \beta_{i, s} - \beta_{j, s}}  \\
+& + I^2 \hat C^2  \sum_{s_1, s_2 = 0}^t \pi^2\chi_{s_1, t}^i \chi_{s_2, t}^j\exp( \sigma_{i, s_1} \rho_{i, s_1}  \sigma_{j, s_2} \rho_{j, s_2} ) \\
+& + I^2 \hat C^2 \sum_{s_1, s_2 = 0}^t \pi^2 \chi_{s_1, t}^i \chi_{s_2, t}^j e^{- \beta_{j, s_2}} e^{ - \frac{1}{2}\rho_{i, s_1}^2  \rho_{z,r}^2 \sigma_{i, s_1}^2 } E_t D[r_{t+1}]  e^{ \sigma_{i, s_1} \rho_{i, s_1} \rho_{z, r} \xi_{t+1} } \\
+&+ I^2 \hat C^2 \sum_{s_1, s_2 = 0}^t \pi^2 \chi_{s_1, t}^i \chi_{s_2, t}^j  e^{- \beta_{i, s_1}} e^{ - \frac{1}{2}\rho_{j, s_2}^2 \rho_{z, r}^2\sigma_{j, s_2}^2} E_t D[r_{t+1}] e^{\sigma_{j, s_2} \rho_{j, s_2} \rho_{z, r} \xi_{t+1} } \\
+&+ 2I^2 \hat C  E_t (J^*[r_{t+1}] (e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ )  \\
+&+ I^2 \hat C \sum_{s = 0}^t \pi\chi_{s, t}^i  e^{- \beta_{i, s}}E_t (\hat C J^*[r_{t+1}]  + ( e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+) D[r_{t+1}]\\
+&+ I^2 \hat C \sum_{s = 0}^t \pi\chi_{s, t}^i e^{ - \frac{1}{2}\rho_{i, s}^2 \rho_{z, r}^2 \sigma_{i, s}^2} E_t (\hat C J^*[r_{t+1}]  + ( e^{- \beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+)  e^{\sigma_{i, s} \rho_{i, s} \rho_{z, r}\xi_{t+1} }   \\
+&+ I^2 \hat C \sum_{s = 0}^t \pi\chi_{s, t}^j  e^{- \beta_{j, s}}E_t ( \hat C J^*[r_{t+1}]  + ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+)D[r_{t+1}] \\
+&+I^2 \hat C \sum_{s = 0}^t \pi\chi_{s, t}^j e^{ - \frac{1}{2}\rho_{j, s}^2 \rho_{z, r}^2\sigma_{j, s}^2} E_t (\hat C J^*[r_{t+1}]  + ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+) e^{\sigma_{j, s} \rho_{j, s} \rho_{z, r} \xi_{t+1} }
+\end{align*}
+When, $i = j,$
+\begin{align*}
+&E_t[R_{t+1}^i  R_{t+1}^i] (A_t^i + I \hat C J^*[r_t])(A_t^j + I \hat C J^*[r_t])  =I^2 \hat C^2 E_t( J^*[r_{t+1}]^2) \\
+&+I^2 E_t (( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+)^2  \\
+&+ I^2 \hat C^2 E_t (D[r_{t+1}])^2  \left(\sum_{s = 0}^t \pi (\chi_{s, t}^i)^2e^{- 2\beta_{i, s} } + \sum_{s_1 \neq s_2, s_1, s_2 = 0}^t \pi^2 \chi_{s_1, t}^i   \chi_{s_2, t}^i  e^{- \beta_{i, s_1} - \beta_{i, s_2} } \right) \\
+& + I^2 \hat C^2  \sum_{s = 0}^t \pi (\chi_{s, t}^i)^2 \exp(\sigma_{i, s}^2 ) \\
+&+ I^2 \hat C^2  \sum_{s_1 \neq s_2, s_1, s_2 = 0}^t \pi^2 \chi_{s_1, t}^i \chi_{s_2, t}^i\exp(\rho_{i, s_1} \sigma_{i, s_1} \rho_{i, s_2} \sigma_{i, s_2}  ) \\
+& + 2 I^2 \hat C^2 \sum_{s = 0}^t \pi (\chi_{s, t}^i)^2  e^{- \beta_{i, s}} e^{ - \frac{1}{2} \rho_{i, s}^2 \rho_{z,r}^2\sigma_{i, s}^2 }  E_t D[r_{t+1}] e^{ \sigma_{i, s} \rho_{i, s} \rho_{z,r} \xi_{t+1} } \\
+&+ 2 I^2 \hat C^2 \sum_{s_1 \neq s_2, s_1, s_2 = 0}^t \pi^2 \chi_{s_1, t}^i \chi_{s_2, t}^i e^{- \beta_{i, s_1}} e^{ - \frac{1}{2} \rho_{i, s_2}^2 \rho_{z,r}^2 \sigma_{i, s_2}^2}E_t  D[r_{t+1}]  e^{ \sigma_{i, s_2} \rho_{i, s_2} \rho_{z,r} \xi_{t+1} }\\
+&+2 I^2 \hat C  E_t J^*[r_{t+1}] ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+  \\
+&+ 2 I^2 \hat C E_t( \hat C J^*[r_{t+1}] + ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+) \sum_{s = 0}^t \pi \chi_{s, t}^i  D[r_{t+1}] e^{- \beta_{i, s}} \\
+&+ 2 I^2 \hat C \sum_{s = 0}^t \pi \chi_{s, t}^i    e^{ - \frac{1}{2}\rho_{i, s}^2 \rho_{z,r}^2 \sigma_{i, s}^2}  E_t( \hat C J^*[r_{t+1}] + ( e^{- \beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+)e^{ \sigma_{i, s} \rho_{i, s} \rho_{z,r} \xi_{t+1}  }
+\end{align*}
+\subsection{Numerical Integration}
+Computing the second moment of returns requires computing the following integrals:
+\begin{enumerate}
+\item $E_t[((e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+)^2]$
+\item $ E_t[(e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ (e^{-\beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+] $
+\item $ E_t[J^*[r_{t+1}]^2] $
+\item $ E_t[D[r_{t+1}]^2] $
+\item $ E_t[D[r_{t+1}] J^*[r_{t+1}]]$
+\item $ E_t[J^*[r_{t+1}] (e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+]$
+\item $ E_t[D[r_{t+1}] (e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+]$
+\item $ E_t[J^*[r_{t+1}] e^{y \xi_{t+1}}]$
+\item $ E_t[D[r_{t+1}] e^{y \xi_{t+1}}]$
+\item $ E_t[(e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+ e^{y \xi_{t+1}}].$
+\end{enumerate}
+
+The following computations illustrate how these integrals can be computed numerically. For (1), 
+\begin{align*}
+&E_t[((e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+)^2] \\
+&= \int_{r_{t+1}} \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}}(e^{-\beta} \hat C D[r_{t+1}] - 1)^2 e^{(\beta - \beta^*) / s} / s d \beta d F (r_{t+1}) \\
+&= \frac{\hat C^2}{s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}D[r_{t+1}]^2 \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} e^{\beta  (1/ s - 2)}  d \beta d F (r_{t+1})\\
+ &- \frac{2\hat C}{s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}D[r_{t+1}] \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} e^{\beta  (1/ s - 1)}  d \beta d  F (r_{t+1}) \\
+ &+\frac{1}{s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}\int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} e^{\beta  (1/ s )}  d \beta d F (r_{t+1}) \\
+&= \frac{\hat C^2}{1-2s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}D[r_{t+1}]^2  e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}  (1/ s - 2)}  d \beta d F (r_{t+1})\\ 
+&- \frac{2\hat C}{1-s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}D[r_{t+1}] e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}  (1/ s - 1)}  d \beta d F (r_{t+1}) \\
+ &+ e^{-\frac{\beta^*}{s}}\int_{r_{t+1}} e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}  (1/ s )}  d \beta d F (r_{t+1}).
+ \end{align*}
+
+For (2),
+\begin{align*}
+&E_t[(e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+(e^{-\beta_{j, t+1}} \hat C D[r_{t+1}] - 1)^+ ] \\
+&= \frac{e^{-2 \beta^*/s}}{s^2}\int_{r_{t+1}} \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}}(e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1) \\
+&\times (e^{-\beta_{j, t+1}} \hat C D[r_{t+1}] - 1) e^{\beta^i / s}  e^{\beta^j / s} d \beta^i d \beta^j d F (r_{t+1}) \\
+&=\frac{e^{-2 \beta^*/s}}{s^2}\int_{r_{t+1}} \left(\int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} (e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1) e^{\beta^i / s} d \beta^i\right)^2 d F (r_{t+1}) \\
+&=e^{-2 \beta^*/s}\int_{r_{t+1}}(\frac{\hat C}{1-s}D[r_{t+1}] e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}  (1/ s - 1)} -  e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}/ s})^2 d F (r_{t+1}).
+\end{align*}
+For (6) and (7), 
+\begin{align*}
+&E_t[f(r_{t+1}) (e^{-\beta_{i, t+1}} \hat C D[r_{t+1}] - 1)^+] \\
+&= \int_{r_{t+1}} \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}}f(r_{t+1})(e^{-\beta} \hat C D[r_{t+1}] - 1) e^{(\beta - \beta^*) / s} / s d \beta d F (r_{t+1}) \\
+&= \frac{\hat C}{s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}f(r_{t+1}) D[r_{t+1}] \int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} e^{\beta  (1/ s - 1)}  d \beta d F (r_{t+1})\\
+&- \frac{ e^{-\frac{\beta^*}{s}}}{s}\int_{r_{t+1}} f(r_{t+1})\int_{-\infty}^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}} e^{\beta/ s} d \beta d F (r_{t+1}) \\
+&= \frac{\hat C}{1-s} e^{-\frac{\beta^*}{s}}\int_{r_{t+1}}f(r_{t+1}) D[r_{t+1}] e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}  (1/ s - 1)}  d F(r_{t+1})\\
+& -  e^{-\frac{\beta^*}{s}}\int_{r_{t+1}} f(r_{t+1}) e^{\min\{\log (\hat C D[r_{t+1}]), \beta^* \}/ s}  d F (r_{t+1}).
+\end{align*}
+Last, for (8)-(10), note if
+\begin{equation*}
+x = \mu + \sigma \epsilon
+\end{equation*}
+where $\epsilon \sim \mathcal{N}(0, 1)$, we want to compute integrals of the form
+\begin{equation*}
+\mathbb{E}[f(x) e^{y \epsilon}] = \int_{-\infty}^{\infty} f(\mu + \sigma \epsilon) e^{y \epsilon} \frac{1}{\sqrt{2\pi}} e^{-\frac{\epsilon^2}{2}} \, d\epsilon
+\end{equation*}
+Completing the square, the expectation becomes:
+\begin{equation*}
+\mathbb{E}[f(x) e^{y \epsilon}] = e^{\frac{y^2}{2}} \int_{-\infty}^{\infty} f(\mu + \sigma \epsilon) \frac{1}{\sqrt{2\pi}} e^{-\frac{(\epsilon - y)^2}{2}} \, d\epsilon
+\end{equation*}
+Change variables $\tilde{\epsilon} = (\epsilon - y)/\sqrt{2},$
+so
+\begin{equation*}
+\mathbb{E}[f(x) e^{y \epsilon}] = \sqrt{2} e^{\frac{y^2}{2}} \int_{-\infty}^{\infty} f\left(\mu + \sigma \left(\sqrt 2 \tilde{\epsilon} + y\right)\right) \frac{1}{\sqrt{2\pi}} e^{-\tilde{\epsilon}^2}  d\tilde{\epsilon}
+\end{equation*}
+To compute this expectation numerically using Gauss-Hermite quadrature, we approximate the integral:
+\begin{equation*}
+\int_{-\infty}^{\infty} g(\tilde{\epsilon}) e^{-\tilde{\epsilon}^2} \, d\tilde{\epsilon} \approx \sum_{i=1}^{n} w_i g(\tilde{\epsilon}_i)
+\end{equation*}
+where $g(\tilde{\epsilon}) = f(\mu + \sigma (\sqrt{2} \tilde{\epsilon} + y))$ and the integral is adjusted by the factor $e^{\frac{y^2}{2}}/\sqrt{\pi}$.
+
+\subsection{Taylor Factor model}
+In the following sections, we tie returns in the model to classical empirical factor models. Empirical methods employ the APT-inspired factor equation
+\begin{equation} X_{t+1}^i = \alpha_{t}^i + \beta_t^if_{t+1} + \varepsilon_{t+1}^i\label{eqn:apt like eqn}
+\end{equation}
+for excess returns $X_{t+1}^i \equiv R_{t+1}^i - R_{t+1}^f = R_{t+1}^i - \exp(r_t)$. Note that the intercept $\alpha_t^i$ and slopes $\beta_t^i$ are known at time $t$, before the excess return is realized. We can compute a BGN-implied APT equation by computing a first-order Taylor expansion of returns.
+
+We can write 
+\begin{align}
+    X_{t+1}^i = \frac{1}{B_t^i}&\Bigg( \underbrace{ J^*[\hat{r}_t+\xi_{t+1}]}_{\text{Growth options}} + \underbrace{ D[\hat r_{t}+\xi_{t+1}] \sum_{s = 0}^{t} \chi_{s, t+1}^i \exp(- \beta_{i, s})}_{\text{Assets in place}} \\
+    &+ \underbrace{\left( \exp(- \beta_{i, t+1}) D[\hat{r}_{t}+\xi_{t+1}] - 1/\hat C\right)^+}_{\text{NPV of chosen investment}} \nonumber \\
+    & +   \underbrace{\sum_{s = 0}^t \chi_{s, t+1}^i C_{s, t+1}^i}_{\text{Cash flows}} - B_t^i \exp(r_t)\Bigg) \label{eqn:exc ret ident}
+\end{align}
+where
+\begin{align*}   
+B_t^i &\equiv D[r_t]\sum_{s=1}^{t}\chi_{s,t}^i\exp(-\beta_{i,s}) + J^*[r_t] \\
+C_{s, t+1}^i &\equiv \exp\left(-\frac{1}{2}\sigma_{i,s}^2+ \sigma_{i,s}\sqrt{1-\rho_{i,s}^2}\eta_{s,t+1}^i + \sigma_{i,s}\rho_{i,s}\rho_{z,r}\xi_{t+1}+\sigma_{is}\rho_{is}\sqrt{1-\rho_{z,r}^2} \mu_{t+1}\right) \\
+\hat{r}_{t} &\equiv \kappa r_t + (1-\kappa)\bar{r} \quad\Rightarrow r_{t+1} \equiv \hat{r}_t + \xi_{t+1}
+\end{align*}
+See that $B_t^i$ is the value of the firm at the end of time $t$. The randomness of $X_{t+1}^i$ is driven by $\eta_{s,t+1}^i$, $\xi_{t+1}$, $\mu_{t+1}$, $\exp(-\beta_{i,t+1})$, and various $\chi$ random variables. For the first three, they are iid and therefore their time-$t$ conditional distributions never change and their conditional mean is always 0.
+
+Looking first at Growth options and Assets in place, note that $D[\hat{r}_t+\xi_{t+1}]$ and $J^*[\hat{r}_t+\xi_{t+1}]$ are numerically calculated. We will need their derivative with respect to $\xi_{t+1}$, and those will be a function of $\hat{r}_t$. Evaluating these derivatives at the conditional mean of $\xi$, we denote them as $dD[\hat{r}_t]$ and $dJ[\hat{r}_t]$, which must also be numerically calculated.
+
+Both the Assets in place and Cash flows include the random variables $\chi_{s,t+1}^$, which are independent of everything else. Note that $\chi_{s,t+1}^i$ is only random if the project was alive at $t$, that is, if $\chi_{s,t}^i=1$. To signify this, we will work with the explicitly-conditional random variable $\left(\chi_{s,t+1}^i|\chi_{s,t}^i=1\right)$ which is iid and $E\left(\chi_{s,t+1}^i|\chi_{s,t}^i=1\right)=\pi$. Looking at the remaining randomness in Cash flows, note
+\[
+\frac{\partial C_{s,t+1}^i}{\partial \eta_{s,t+1}^i}
+= \sigma_{i,s}\sqrt{1-\rho_{i,s}^2}C_{s,t+1}^i,
+\quad
+\frac{\partial C_{s,t+1}^i}{\partial \xi_{t+1}}
+= \sigma_{i,s}\rho_{i,s}\rho_{z,r}C_{s,t+1}^i,
+\quad
+\frac{\partial C_{s,t+1}^i}{\partial \mu_{t+1}}
+= \sigma_{is}\rho_{is}\sqrt{1-\rho_{z,r}^2}C_{s,t+1}^i.
+\]
+
+The NPV of chosen investment is only observed if positive. Hence we only observe $\exp(-\beta_{i,t+1})$ where $\exp(- \beta_{i, t+1}) D[\hat{r}_{t}+\xi_{t+1}] > 1/\hat C$. In principle, the time-$t$ conditional distribution of observed $\exp(-\beta_{i,t+1})$ depends on $\hat{r}_t+\xi_{t+1}$. Meanwhile, the actual $\exp(-\beta_{i,t+1})$ are independent of everything else and iid. Denote its mean $\overline{\exp(-\beta)}$. 
+
+We calculate the derivatives
+\begin{align*}
+\frac{\partial}{\partial (\chi_{s,t+1}^i|\chi_{s,t}^i=1)}
+    &= \frac{1}{B_t^i}\Bigg[ D[\hat r_{t}+\xi_{t+1}]\exp(-\beta_{is}) + C_{s,t+1}^i
+    \Bigg] \\
+\frac{\partial}{\partial \eta_{s,t+1}^i}
+    &= \frac{1}{B_t^i}\Bigg[ 
+    \chi_{s,t+1}^i\sigma_{i,s}\sqrt{1-\rho_{i,s}^2}C_{s,t+1}^i\Bigg] \\
+\frac{\partial}{\partial \mu_{t+1}}
+    &= \frac{1}{B_t^i}\Bigg[
+    \sum_{s=0}^{t}\chi_{s,t+1}^i \sigma_{is}\rho_{is}\sqrt{1-\rho_{z,r}^2}C_{s,t+1}^i
+    \Bigg] \\
+\frac{\partial}{\partial \xi_{t+1}}
+    &= \frac{1}{B_t^i}\Bigg[
+     dD[\hat{r}_t+\xi_{t+1}]\sum_{s=0}^{t} \chi_{s,t+1}^i\exp(-\beta_{is}) + dJ[\hat r_t+\xi_{t+1}] \\
+    &\quad\quad + \frac{\partial}{\partial \xi_{t+1}}\left(\exp(- \beta_{i, t+1}) D[\hat r_{t}+\xi_{t+1}] - 1/\hat C\right)^+\\ &\quad\quad + \sum_{s=0}^{t}\chi_{s,t+1}^i \sigma_{i,s}\rho_{i,s}\rho_{z,r}C_{s,t+1}^i
+    \Bigg] \\
+\frac{\partial}{\partial \exp(-\beta_{i,t+1})}
+    &= \frac{1}{B_{t+1}^i}
+    \Bigg[\frac{\partial}{\partial \exp(- \beta_{i, t+1})} \left(\exp(- \beta_{i, t+1})D[\hat r_{t}+\xi_{t+1}] - 1/\hat C\right)^+\Bigg] 
+\end{align*}
+
+Choose the point of approximation as the random variables' time-$t$ conditional mean. (For $\eta_{s,t+1}^i,\mu_{t+1},\xi_{t+1}$ this is also their unconditional mean; not technically so for $\chi_{s,t+1}^i$ because we use $(\chi_{s,t+1}^i|\chi_{s,t}^i)$.) At the approximation point,
+\begin{align*}
+\frac{\partial}{\partial (\chi_{s,t+1}^i|\chi_{s,t}^i=1)}
+    &= \frac{1}{B_t^i}\Bigg[
+    D[\hat r_t]\exp(-\beta_{is})  + \exp\left(-\frac{1}{2}\sigma_{is}^2 \right)\Bigg] &\equiv A^\chi_{i,s,t}\\
+\frac{\partial}{\partial \eta_{s,t+1}^i} 
+    &= \frac{1}{B_t^i}\Bigg[ 
+    \pi\chi_{s,t}^i\sigma_{is}\sqrt{1-\rho_{is}^2} \exp\left(-\frac{1}{2}\sigma_{is}^2\right) 
+    \Bigg] &\equiv A^\eta_{i,s,t}\\
+\frac{\partial}{\partial \mu_{t+1}}
+    &= \frac{1}{B_t^i}\Bigg[
+    \sum_{s=0}^{t} \pi \chi_{s,t}^i \sigma_{is}\rho_{is}\sqrt{1-\rho_{zr}^2}
+    \exp\left(-\frac{1}{2}\sigma_{is}^2\right)
+    \Bigg] &\equiv A^\mu_{i,t}\\
+\frac{\partial}{\partial \xi_{t+1}}
+    &= \frac{1}{B_t^i}\Bigg[
+    dD[\hat r_t]\sum_{s=0}^{t} \pi\chi_{s,t}^i\exp(-\beta_{is}) + dJ[\hat{r}_t] \\
+    &\quad + \overline{\exp(-\beta)}dD[\hat{r}_t]
+ \ \ \mathbbm{1}\left({\overline{\exp(-\beta)} D[\hat r_t] \geq 1/\hat C}\right) 
+\\ &\quad + \sum_{s=0}^{t}\pi \chi_{s,t}^i\sigma_{is}\rho_{is}\rho_{zr}\exp\left(-\frac{1}{2}\sigma_{is}^2\right)
+    \Bigg] &\equiv A^\xi_{i,t}\\
+\frac{\partial}{\partial \exp(-\beta_{i,t+1})}
+    &= \frac{1}{B_t^i}
+    \Bigg[D[\hat r_t] 
+ \ \ {\mathbbm{1}}\left({\overline{\exp(-\beta)} D[\hat r_t] \geq 1/\hat C}\right)\Bigg] &\equiv A^\beta_{i,t}.
+\end{align*}
+
+
+And, $X_{t+1}^i$ at this point is 
+\begin{align*} A_{i,t}^0 = 
+\frac{1}{B_t^i}&\Bigg( J^*[\hat{r}_t] + D[\hat r_{t}] \sum_{s = 0}^{t} \pi\chi_{s, t}^i  \exp(-\beta_{is}) + \left( \overline{\exp(- \beta)} D[\hat{r}_{t}] - 1/\hat C\right)^+ \\
+&\quad+   \sum_{s = 0}^t \pi\chi_{s, t}^i\exp\left(-\frac{1}{2}\sigma_{is}^2\right) - B_t^i \exp(r_t)\Bigg).
+\end{align*}
+
+Therefore we have the linearization
+\begin{align}
+    X_{t+1}^i 
+    &= A_{i,t}^0 + \sum_{s=0}^t \left(A_{i,s,t}^\chi \left[\chi_{s,t+1}^i-\pi\right]{\mathbbm{1}}(\chi_{s,t}^i=1) + A^\eta_{i,s,t} \eta_{s,t+1}^i\right) \nonumber\\
+    &\quad + A_{i,t}^\mu \mu_{t+1} + A_{i,t}^\xi \xi_{t+1} + A_{i,t}^\beta \left[\exp(-\beta_{i,t+1})-\overline{\exp(-\beta)}\right] + \text{(higher order terms)}. \nonumber
+\end{align}
+First-order terms not involving $\mu_{t+1}, \xi_{t+1}$ can be collected into a cross-sectional error $$\sum_{s=0}^t \left(A_{i,s,t}^\chi \left[\chi_{s,t+1}^i-\pi\right]{\mathbbm{1}}(\chi_{s,t}^i=1) + A^\eta_{i,s,t} \eta_{s,t+1}^i\right) + A_{i,t}^\beta \left[\exp(-\beta_{i,t+1})-\overline{\exp(-\beta)}\right].$$ This is mean zero conditional on $A_{i,t}^\mu,A_{i,t}^\xi$, since the innovations $\chi_{s, t+1}^i, \eta_{s, t+1}, \mu_{t+1} \xi_{t+1}, \exp(-\beta_{i, t+1})$ are conditionally independent of all time $t$ observables. We simply assume higher-order terms are cross-sectionally uncorrelated with $A_{i,t}^\mu,A_{i,t}^\xi$.
+
+We can write a BGN-implied version of \eqref{eqn:apt like eqn}:
+\begin{equation}
+    X_{t+1}^i = A_{i,t}^0 + A_{i,t}^\mu \mu_{t+1} + A_{i,t}^\xi \xi_{t+1} + u_{i,t+1} \label{eqn:bgn apt}
+\end{equation} 
+where $E(u_{i,t+1}|A_{i,t}^\mu,A_{i,t}^\xi)=0$. Cross-sectional OLS is consistent for $(\mu_{t+1},\xi_{t+1})$.
+
+% A simplified OLS statement:
+% \begin{equation}
+%     X_{}^i = A_{i}^0 + A_{i}^\mu \mu_{} + A_{i}^\xi \xi_{} + u_{i} \label{eqn:bgn apt}
+% \end{equation} 
+% where $E(u_{i}|A_{i}^\mu,A_{i}^\xi)=0$. Then cross-sectional OLS is consistent for $(\mu_{},\xi_{})$. The APT holding (I think) would be
+% \begin{equation}
+%     X_{}^i = (A_{i}^\mu\lambda^\mu + A_i^\xi\lambda^\xi) + A_{i}^\mu \mu_{} + A_{i}^\xi \xi_{} + u_{i} \label{eqn:bgn apt}
+% \end{equation} 
+
+$A_{i,t}^0$ appears to be nonzero.  The $\mu_{t+1},\xi_{t+1}$ are SDF innovations, which are conditionally mean zero, but they are priced. If the APT holds, this would show up as a nonzero $A_{i,t}^0$ in \eqref{eqn:bgn apt}, but it would need the case that $\lambda_t^\mu,\lambda_t^\xi$ exist such that 
+$$A_{i,t}^0 = A_{i,t}^\mu\lambda_t^\mu + A_{i,t}^\xi\lambda_t^\xi \quad\text{for every } i.$$   
+
+This is true up to first order approximation, since 
+\begin{align*}
+A_{i, t}^0 &= E_t X_{t+1}^i = - \exp(r_t) \text{Cov}_t(X_{t+1}, \frac{z_{t+1}}{z_t})\\
+&\approx  - \exp(r_t) \text{Cov}_t(X_{t+1}, \frac{z_{t+1}}{z_t}) \\
+&=- \exp(r_t) \text{Cov}_t( A_{i,t}^0 + A_{i,t}^\mu \mu_{t+1} + A_{i,t}^\xi \xi_{t+1}, \frac{z_{t+1}}{z_t}) \\
+&= - A_{i,t}^\mu \exp(r_t) \text{Cov}_t(\mu_{t+1} , \frac{z_{t+1}}{z_t}) - A_{i,t}^\xi 
+\exp(r_t) \text{Cov}_t( \xi_{t+1}, \frac{z_{t+1}}{z_t}).
+\end{align*}
+
+\subsection{Projection} 
+
+An alternative to the two factor linear Taylor expansion model is to simply compute the conditional projection of returns onto $\mu, \xi.$ Conditional on time $t$, $\mu_{t+1}, \xi_{t+1}$ are independent, so we need $\text{Cov}_t(X_{t+1}, \mu_{t+1})$ and $\text{Cov}_t(X_{t+1}, \xi_{t+1}).$ Then, 
+\begin{align*}
+    \text{Cov}_t(X_{t+1}, \xi_{t+1}) &= \frac{1}{B_t^i} \text{Cov}_t(J^*[r_{t+1}],  \xi_{t+1}) \\
+    &+ \frac{\pi}{B_t^i}\sum_{s = 0}^t \chi_{s, t}^i \exp(- \beta_{i, s}) \text{Cov}_t(D[r_{t+1}] ,  \xi_{t+1}) \\
+    &+ \frac{1}{B_t^i} \text{Cov}_t((\exp(- \beta_{i, t+1} )D[r_{t+1}] - 1/\hat C)^+,  \xi_{t+1}) \\
+    &+ \frac{\pi}{B_t^i} \text{Cov}_t(\sum_{s=0}^t \chi_{s, t}^i C_{s, t+1}^i,  \xi_{t+1}).
+\end{align*}
+Stein's lemma conveniently makes the resulting projection close to the Taylor series. Namely $\text{Cov} (g(Y), Y) = \text{Var}(Y) E(g'(Y))$ for $Y$ normal. All terms in the projection apart from the last have to be computed numerically. For the last term, note:
+\[
+\text{Cov}_t(\sum_{s=0}^t \chi_{s, t}^i C_{s, t+1}^i,  \xi_{t+1}) = E_t \sum_{s=0}^t \chi_{s, t}^i \sigma_{is} \rho_{is} \rho_{zr} C_{s, t+1}^i = \rho_{zr} \sum_{s=0}^t \chi_{s, t}^i \sigma_{is} \rho_{is}.
+\]
+For the other regressor, 
+\begin{align*}
+    \text{Cov}_t(X_{t+1}, \mu_{t+1}) &=\frac{\pi}{B_t^i} \text{Cov}_t(\sum_{s=0}^t \chi_{s, t}^i C_{s, t+1}^i, \mu_{t+1}) = \frac{\pi}{B_t^i }\sqrt{1-\rho_{zr}^2} \sum_{s=0}^t \chi_{s, t}^i \sigma_{is} \rho_{is} 
+\end{align*}
+
+The theoretical prices of risk of the latent non-tradable factors have simple expressions. The prices of risk are given by $-\exp(r_t) \text{Cov}_t(\mu_{t+1}, \frac{z_{t+1}}{z_t})$ and $-\exp(r_t) \text{Cov}_t(\xi_{t+1}, \frac{z_{t+1}}{z_t}).$ Recall \[
+\frac{z_{t+1}}{z_t} = \exp[-r_t - \frac{1}{2} \sigma_z^2 - \sigma_z (\rho_{z, r} \xi_{t+1} + \sqrt{1 - \rho_{z, r}^2} \mu_{t+1})]
+\]
+Using this, and, for instance, Stein's Lemma, we get the prices of risk are $\sigma_z \sqrt{1 -\rho_{z, r}^2} $ and $\sigma_z \rho_{z, r}$, respectively.
+
+
+\section{\cite{kp_2014}}
+
+\cite{kp_2014} is a continuous-time model in which firms receive cash investment opportunities at a rate $\lambda_{ft}$. Prices in the model are given by assets in place plus growth options. Prices can be expressed, for functions $A, G$ as \[
+x_t \sum_{ j \in \mathcal J_t^f} A(\epsilon_{ft}, u_{j, t}) (K_j^f)^{\alpha} + z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{ft}, \lambda_{ft})
+\]
+Projects have an upfront cost \[
+- z_t^{-1} x_t K_j^f
+\]
+at its initiation, for firm $f$. After formation, projects yield flows of \[
+\epsilon_{ft} u_{jt}^f x_t (K_j^f)^{\alpha} dt
+\]
+between $t$ and $t+dt$. $f$ superscripts have been added so we can distinguish between firms.
+
+Discrete returns between $t$ and $t+dt$ are given by 
+\begin{multline*}
+\frac{x_{t+dt} \sum_{ j = dt}^{t+dt} \chi_{j, t+dt}^f A(\epsilon_{f,t+dt}, u_{j, t+dt}^f)( K_j^f)^{\alpha} + z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f,t+dt}, \lambda_{f,t+dt})}{x_t \sum_{ j = dt}^t \chi_{j, t}^f  A(\epsilon_{ft}, u_{j, t}^f) K_j^{\alpha} + z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{ft}, \lambda_{ft})}  \\
++ \frac{\sum_{j = dt}^t\chi_{j, t}^f \epsilon_{f,t} u_{j,t}^f x_{t} (K_j^f)^{\alpha} dt - \chi_{t+dt, t+dt}^fz_{t+dt}^{-1} x_{t+dt} K_{t+dt}^f}{x_t \sum_{ j = dt}^t \chi_{j, t}^f  A(\epsilon_{ft}, u_{j, t}^f) K_j^{\alpha} + z_t^{\frac{\alpha}{1 - \alpha}} x_t G(\epsilon_{ft}, \lambda_{ft})},
+\end{multline*}
+where $\chi_{j, t}^f$ denotes whether project arriving at $j$ of firm $f$ is alive at date $t$. Projects expire at rate $\delta.$
+
+It is convenient to rewrite the first and last terms of the numerator as
+\begin{multline*}
+x_{t+dt} \sum_{ j = dt}^{t+dt} \chi_{j, t+dt}^f A(\epsilon_{f,t+dt}, u_{j, t+dt}^f)( K_j^f)^{\alpha} - \chi_{t+dt, t+dt}^fz_{t+dt}^{-1} x_{t+dt} K_{t+dt}^f \\
+= x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^f A(\epsilon_{f,t+dt}, u_{j, t+dt}^f)( K_j^f)^{\alpha} + \chi_{t+dt, t+dt}^f C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}
+\end{multline*}
+This equality uses equation (A3) in KP. 
+
+\subsection{Some useful facts}
+
+If $(x)_{t \geq 0}$ is a GBM with parameters $\mu, \sigma$, then \[
+E_t[x_{t+s}^k|x_t = x] = x_t^k \exp \left(k \mu s + \frac{1}{2} k(k-1) \sigma^2 s\right).
+\]
+If $(x)_{t \geq 0}$ is a square root process with parameters $\theta, b, \sigma$, then \[
+E_t[x_{t+s}|x_t = x] = b + (x-b) e^{- \theta s}
+\]
+and \[
+\text{Var}_t[x_{t+s}| x_t = x] = x \frac{\sigma^2}{\theta} (e^{- \theta s} - e^{-2 \theta s}) + \frac{b \sigma^2}{2\theta} (1 - e^{- \theta s})^2.
+\]
+\subsection{Expected Returns}
+
+The denominator of returns $P_t$, which is known at $t$, so ignore it.
+
+The conditional expectation of the numerator of returns consists of four terms. The first is 
+\begin{multline*}
+e^{\mu_x dt} x_t \sum_{j = dt}^t (1 - \delta dt) \chi_{j, t}^f E_t A(\epsilon_{f, t+dt}, u_{j, t+dt}^f) (K_j^f)^{\alpha} \\
+= e^{\mu_x dt} x_t \sum_{j = dt}^t (1 - \delta dt) \chi_{j, t}^f A(1 + (\epsilon_{f, t} - 1) e^{-\theta_{\epsilon} dt} , 1 + (u_{j, t}^f - 1) e^{-\theta_{u} dt}) (K_j^f)^{\alpha}
+\end{multline*}
+This computation uses the expression for $A$, as well as independence of $\epsilon, u$.
+
+The second term is \[
+z_t^{\frac{\alpha}{1 - \alpha}} \exp \left( \frac{\alpha}{1 - \alpha}\mu_z dt + \frac{1}{2} \frac{\alpha(2 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) x_t e^{\mu_x dt} E_t G(\epsilon_{f, t+dt}, \lambda_{f, t+dt}).
+\]
+This last conditional expectation needs to be computed numerically.
+
+The penultimate term is \[
+\sum_{j = dt}^t\chi_{j, t}^f \epsilon_{f,t} u_{j,t}^f x_{t} (K_j^f)^{\alpha} dt.
+\]
+
+The last term, after making the adjustment to the first and last terms mentioned above, is \[
+\lambda_{f t} dt C z_t^{\frac{\alpha}{1 - \alpha}} \exp \left( \frac{\alpha}{1 - \alpha}\mu_z dt + \frac{1}{2} \frac{\alpha(2 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) x_t e^{\mu_x dt} E_t A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}},
+\]
+where this last conditional expectation also needs to be computed numerically.
+
+\subsection{Second moment of Returns}
+
+Now consider returns of two firms $f_1 \neq f_2.$ As with BGN, we want to compute $E[R^{f_1} R^{f_2}].$
+
+The numerator of $R^{f_1}$ is
+\begin{multline*}
+x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f_1} A(\epsilon_{f_1,t+dt}, u_{j, t+dt}^{f_1})( K_j^{f_1})^{\alpha} + \chi_{t+dt, t+dt}^{f_1}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}}\\
++ z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f_1,t+dt}, \lambda_{f_1,t+dt})+ \sum_{j = dt}^t\chi_{j, t}^{f_1} \epsilon_{f_1,t} u_{j,t}^{f_1} x_{t} (K_j^{f_1})^{\alpha} dt
+\end{multline*}
+The last term is known at $t$, so we can ignore it for now, and just use the expected return to incorporate it back into $E[R^{f_1} R^{f_2}].$
+
+Therefore, we need to compute
+{\footnotesize
+\begin{align*}
+    &\left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f_1} A(\epsilon_{f_1,t+dt}, u_{j, t+dt}^{f_1})( K_j^{f_1})^{\alpha} + \chi_{t+dt, t+dt}^{f_1}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} \right. \\
+     &\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\left. +z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f_1,t+dt}, \lambda_{f_1,t+dt})\right) \\
+    &\times \left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f_2} A(\epsilon_{f_2,t+dt}, u_{j, t+dt}^{f_2})( K_j^{f_2})^{\alpha} + \chi_{t+dt, t+dt}^{f_2}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f_2, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+    &\qquad \qquad \qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\left.+ z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f_2,t+dt}, \lambda_{f_2,t+dt})\right)
+\end{align*}
+}
+Note first that $x_{t+dt}$ factors out. Therefore,  the $E_t(x_{t+dt}^2)$
+term that results can be ignored for now. Expanding and taking conditional expectations, we get 
+{\footnotesize
+\begin{multline*}
+    \sum_{j_1, j_2}^t (1 - \delta dt)^2 \chi_{j_1, t}^{f_1} \chi_{j_2, t}^{f_2} (K_{j_1}^{f_1} K_{j_2}^{f_2})^{\alpha} A(1 + (\epsilon_{f_1, t} - 1) e^{-\theta_{\epsilon} dt} , 1 + (u_{j_1, t}^{f_1} - 1) e^{-\theta_{u} dt}) A(1 + (\epsilon_{f_2, t} - 1) e^{-\theta_{\epsilon} dt} , 1 + (u_{j_2, t}^{f_2} - 1) e^{-\theta_{u} dt}) \\
+    + z_t^{\frac{\alpha}{1 - \alpha}} \exp \left( \frac{\alpha}{1 - \alpha}\mu_z dt + \frac{1}{2} \frac{\alpha(2 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) \\
+    \times \left( (C\lambda_{f_1 t} dt E_t (A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}}) + E_t G_{f_1})\sum_{j = dt}^t  (1 - \delta dt) \chi_{j, t}^{f_2}A(1 + (\epsilon_{f_2, t} - 1) e^{-\theta_{\epsilon} dt} , 1 + (u_{j, t}^{f_2} - 1) e^{-\theta_{u} dt}) (K_j^{f_2})^{\alpha} \right. \\
+    \left. +  (C\lambda_{f_2 t} dt E_t (A(\epsilon_{f_2, t+dt}, 1)^{\frac{1}{1 - \alpha}}) + E_t G_{f_2})\sum_{j = dt}^t  (1 - \delta dt) \chi_{j, t}^{f_1}A(1 + (\epsilon_{f_1, t} - 1) e^{-\theta_{\epsilon} dt} , 1 + (u_{j, t}^{f_1} - 1) e^{-\theta_{u} dt}) (K_j^{f_1})^{\alpha}\right) \\
+    +z_t^{\frac{2\alpha}{1 - \alpha}} \exp \left( \frac{2\alpha}{1 - \alpha}\mu_z dt +  \frac{ \alpha(3 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) \\
+    \times (C\lambda_{f_1 t} dt E_t (A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}}) + E_t G_{f_1}) (C\lambda_{f_2 t} dt E_t (A(\epsilon_{f_2, t+dt}, 1)^{\frac{1}{1 - \alpha}}) + E_t G_{f_2})
+\end{multline*}
+}
+Above we've written $G(\epsilon_{f_i, t+dt}, \lambda_{f_i, t+dt})$ as $G_{f_i}.$
+
+We need to consider the case $f_1 = f_2$ separately. In this case, we get the expression 
+{\footnotesize
+\begin{align*}
+    &\left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f_1} A(\epsilon_{f_1,t+dt}, u_{j, t+dt}^{f_1})( K_j^{f_1})^{\alpha} + \chi_{t+dt, t+dt}^{f_1}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} \right.\\
+    &\left.\qquad \qquad\qquad \qquad \qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad+ z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f_1,t+dt}, \lambda_{f_1,t+dt})\right) \\
+    &\times \left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f_1} A(\epsilon_{f_1,t+dt}, u_{j, t+dt}^{f_1})( K_j^{f_1})^{\alpha} + \chi_{t+dt, t+dt}^{f_1}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} \right.\\
+    &\left.\qquad \qquad \qquad\qquad \qquad\qquad\qquad \qquad\qquad \qquad\qquad \qquad\qquad \qquad + z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f_1,t+dt}, \lambda_{f_1,t+dt})\right),
+\end{align*}
+}
+analogous to above. Again, we can factor out $x_{t+dt}^2.$ This leaves us with: \begin{multline*}
+    \sum_{j_1}^t (1 - \delta dt) \chi_{j_1, t}^{f_1} (K_{j_1}^{f_1})^{2\alpha} E_t A(\epsilon_{f_1, t+dt}, u_{j_1,t+dt}^{f_1})^2\\
+    \sum_{j_1 \neq j_2}^t (1 - \delta dt)^2 \chi_{j_1, t}^{f_1} \chi_{j_2, t}^{f_1} (K_{j_1}^{f_1} K_{j_2}^{f_1})^{\alpha} E_t A(\epsilon_{f_1, t+dt}, u_{j_1,t+dt}^{f_1}) A(\epsilon_{f_1, t+dt}, u_{j_2,t+dt}^{f_1}) \\
+    + 2 z_t^{\frac{\alpha}{1 - \alpha}} \exp \left( \frac{\alpha}{1 - \alpha}\mu_z dt + \frac{1}{2} \frac{\alpha(2 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) \\
+    \times \left( C\lambda_{f_1 t} dt \sum_{j = dt}^t  (1 - \delta dt) \chi_{j, t}^{f_1} E_t (A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} A(\epsilon_{f_1, t+dt}^j, u_{j, t+dt}^{f_1})) (K_j^{f_1})^{\alpha}\right.\\
+    \left.+  \sum_{j = dt}^t  (1 - \delta dt) \chi_{j, t}^{f_1} E_t (G_{f_1} A(\epsilon_{f_1, t+dt}^j, u_{j, t+dt}^{f_1}) )(K_j^{f_1})^{\alpha}\right) \\
+    +z_t^{\frac{2\alpha}{1 - \alpha}} \exp \left( \frac{2\alpha}{1 - \alpha}\mu_z dt +  \frac{ \alpha(3 \alpha - 1)}{(1 - \alpha)^2}\sigma_z^2 dt\right) \\
+    \times \left( C^2 \lambda_{f_1, t} dt E_t  A(\epsilon_{f_1, t+dt}, 1)^{\frac{2}{1 - \alpha}} + E_t G_{f_1}^2 + 2 C \lambda_{f_1, t} dt  E_t G_{f_1} A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} \right)
+\end{multline*}
+\subsection{Numerical Integration}
+Several integrals need to be computed in order to calculate the second moment of returns, in addition to the previous 2 that need to be computed to calculate expected returns. Below is a list of the integrals. The first two can be computed analytically. The other integrals involving G need to be computed separately in up and down states (the state governing the arrival of projects):
+\begin{enumerate}
+\item $E_t A(\epsilon_{f_1, t+dt}, u_{j_1,t+dt}^{f_1})^2:$ It will be convenient to write \[
+A(\epsilon, u) = A_0 + A_1(\epsilon - 1) + A_2(u-1) + A_3(\epsilon-1)(u-1). 
+\]
+Then, 
+\begin{multline*}
+    A(\epsilon, u)^2 = A_0^2 + A_1^2(\epsilon - 1)^2 + A_2^2(u-1)^2 + A_3^2(\epsilon-1)^2(u-1)^2 \\
+    + 2 A_0 A_1(\epsilon - 1) + 2 A_0 A_2(u-1) + 2 A_0 A_3(\epsilon-1)(u-1) \\
+    + 2 A_1 A_2 (\epsilon - 1)(u-1) + 2 A_1 A_3 (\epsilon-1)^2 (u-1) + 2 A_2 A_3 (\epsilon-1)(u-1)^2.
+\end{multline*}
+Using independence of $\epsilon, u$, the expectation can be computed analytically using the conditional mean and variance of square root processes.
+\item $E_t A(\epsilon_{f_1, t+dt}, u_{j_1,t+dt}^{f_1}) A(\epsilon_{f_1, t+dt}, u_{j_2,t+dt}^{f_1}):$ We can write 
+\begin{multline*}
+    A(\epsilon, u_1) A(\epsilon, u_2) = A_0^2 + A_1^2(\epsilon - 1)^2 + A_2^2(u_1-1)(u_2 - 1) + A_3^2 (\epsilon - 1)^2(u_1 - 1)(u_2 - 1) \\
+    + 2 A_0 A_1(\epsilon - 1) + A_0 A_2(u_1-1)+ A_0 A_2(u_2-1) + A_0 A_3(\epsilon-1)(u_1-1)+ A_0 A_3(\epsilon-1)(u_2-1) \\
+    + A_1 A_2 (\epsilon - 1)(u_1-1) + A_1 A_2 (\epsilon - 1)(u_2-1) +  A_1 A_3 (\epsilon-1)^2 (u_1-1)\\
+    +  A_1 A_3 (\epsilon-1)^2 (u_2-1) + 2 A_2 A_3 (\epsilon-1)(u_1-1)(u_2 - 1).
+\end{multline*}
+Using this expression, the conditional expectation can be computed using the conditional mean and variance of square root processes. 
+\item $ E_t A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}} A(\epsilon_{f_1, t+dt}^j, u_{j, t+dt}^{f_1}):$ Denote to $(A(\epsilon_{f_1, t+dt}, 1)^{\frac{1}{1 - \alpha}})$ by $A_{mod}(\epsilon_{f_1, t+dt}).$ Then \begin{equation*}
+    A(\epsilon, u) A_{mod}(\epsilon) = (A_0 + A_2(u-1)) A_{mod}(\epsilon) + (A_1 + A_3(u-1)) (\epsilon - 1) A_{mod}(\epsilon).
+\end{equation*}
+This expression can be integrated numerically.
+\item $ E_t (A(\epsilon_{f_1, t+dt}, 1) G_{f_1}):$ Again,  \begin{equation*}
+    G_{f_1} A_{mod}(\epsilon) = (A_0 + A_2(u-1)) G_{f_1}(\epsilon) + (A_1 + A_3(u-1)) (\epsilon - 1) G_{f_1},
+\end{equation*}
+this expression can be integrated numerically.
+\item $E_{t} A_{mod}(\epsilon_{f_1, t+dt})^2$ can be computed numerically.
+\item $E_t G_{f_1}^2$ can be computed numerically.
+\item $E_t G_{f_1} A_{mod}(\epsilon_{f_1, t+dt})$ can be computed numerically.
+\end{enumerate}
+\subsection{Taylor Factor model}
+
+As with BGN, let us now derive a KP-implied APT-style empirical factor model. The return of firm $f$ is
+\begin{multline*}
+    R_{t+dt}^f = \frac{1}{P_t}\left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f} A(\epsilon_{f,t+dt}, u_{j, t+dt}^{f})( K_j^{f})^{\alpha} + \chi_{t+dt, t+dt}^{f}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+\left.+ z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f,t+dt}, \lambda_{f,t+dt})+ \sum_{j = dt}^t\chi_{j, t}^{f} \epsilon_{f,t} u_{j,t}^{f} x_{t} (K_j^{f})^{\alpha} dt\right)
+\end{multline*}
+The sources of randomness are $\chi_{j, t+dt}^f, \chi_{t+dt, t+dt}^f, \epsilon_{f, t+dt}, u_{j, t+dt}^f, \lambda_{f, t+dt}, z_{t+dt}, x_{t+dt}.$ Here $j = dt, \ldots, t$. The last two shocks are aggregate shocks, while others are idiosyncratic. As with BGN, we'll write a Taylor expansion with respect to each of these shocks around their conditional means. Again, since the idiosyncratic shocks are independent of everything else, we can pass them to an error term to focus on the aggregate shocks.
+
+First, note 
+\begin{align*}
+    E_t\chi_{t+dt, t+dt}^f &= \lambda_{f, t} dt\\
+    E_t\chi_{j, t+dt}^f &= (1 - \delta dt) \chi_{j, t}^f\\
+    E_t\epsilon_{f, t+dt} &= 1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}\\
+    E_t u_{j, t+dt}^f &= 1 + (u_{j, t}^f - 1) e^{- \theta_{u} dt} \\
+    E_t\lambda_{f, t+dt} &= \begin{cases}
+    \lambda_f (\lambda_L + \mu_L dt (\lambda_H - \lambda_L)) & \lambda_{f, t} = \lambda_f \lambda_L \\
+    \lambda_f (\lambda_H + \mu_H dt (\lambda_L - \lambda_H))& \lambda_{f, t} = \lambda_f \lambda_H
+    \end{cases}  \\
+    E_t z_{t+dt} &= z_t e^{\mu_z dt}\\
+    E_t x_{t+dt} &= x_t e^{\mu_x dt}.
+\end{align*}
+
+Taylor expanding, we can write \[
+R_t^f \approx A_{f, t}^0 + A_{f, t}^z (z_{t+dt} - z_t e^{\mu_z dt}) + A_{f, t}^x (x_{t+dt} - x_t e^{\mu_x dt}),
+\]
+where 
+\begin{align*}
+    A_{f, t}^0 &=  \frac{1}{P_t}\left(x_t e^{\mu_x dt} \sum_{ j = dt}^{t} (1 - \delta dt) \chi_{j, t}^f A\left(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, 1 + (u_{j, t}^f - 1) e^{- \theta_{u} dt}\right)( K_j^{f})^{\alpha} \right. \\
+    & \left.+  \lambda_{f, t} dt C (z_t e^{\mu_z dt})^{\frac{\alpha}{1 - \alpha}} x_t e^{\mu_x dt} A(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+ &\left.+ (z_t e^{\mu_z dt})^{\frac{\alpha}{1 - \alpha}} x_t e^{\mu_x dt} G(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, E_t \lambda_{f,t+dt})\right.\\
+ & \left.+ \sum_{j = dt}^t\chi_{j, t}^{f} \epsilon_{f,t} u_{j,t}^{f} x_{t} (K_j^{f})^{\alpha} dt\right)\\
+A_{f, t}^z &= \frac{1}{P_t} \left(\frac{\alpha}{1 - \alpha} \lambda_{f, t} dt C (z_t e^{\mu_z dt})^{\frac{2\alpha - 1}{1 - \alpha}} x_t e^{\mu_x dt} A(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+ &\left.+\frac{\alpha}{1 - \alpha} (z_t e^{\mu_z dt})^{\frac{2 \alpha - 1}{1 - \alpha}} x_t e^{\mu_x dt} G(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, E_t \lambda_{f,t+dt}) \right)\\
+A_{f, t}^{\mu} &= \frac{1}{P_t} \left( \sum_{ j = dt}^{t} (1 - \delta dt) \chi_{j, t}^f A\left(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, 1 + (u_{j, t}^f - 1) e^{- \theta_{u} dt}\right)( K_j^{f})^{\alpha} \right. \\
+     &\left.+  \lambda_{f, t} dt C (z_t e^{\mu_z dt})^{\frac{\alpha}{1 - \alpha}}  A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+ & \left.+ (z_t e^{\mu_z dt})^{\frac{\alpha}{1 - \alpha}}  G(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, E_t \lambda_{f,t+dt}) \right)
+\end{align*}
+The expression $G(1 + (\epsilon_{f, t} - 1) e^{- \theta_{\epsilon} dt}, E_t \lambda_{f,t+dt})$ is a slight abuse of notation. Recall, \[
+G(\epsilon, \lambda_f \tilde\lambda_{f, t+1}) = 
+G(\epsilon, \lambda_f \lambda_L)  + \mathbbm{1}_{\tilde \lambda_{f, t+1} =\lambda_H} (G(\epsilon, \lambda_f \lambda_H)-G(\epsilon, \lambda_f \lambda_L)).
+\]
+As a result, we compute $G$ in the Taylor expansion as 
+\[G(\epsilon, \lambda_f \lambda_L)  + (\mathbbm{1}_{\tilde \lambda_{f, t} = \lambda_H}(1 - \mu_H dt) + \mathbbm{1}_{\tilde \lambda_{f, t} = \lambda_L} \mu_L dt) (G(\epsilon, \lambda_f \lambda_H)-G(\epsilon, \lambda_f \lambda_L)).\]
+
+\subsection{Projection}
+
+As with BGN, an alternative to the Taylor expansion is to compute the theoretical conditional projection of $R_{t+dt}^f$ onto $z_{t+dt} - E_t(z_{t+dt})$ and $x_{t+dt} - E_t(x_{t+dt}).$ Recall 
+\begin{multline*}
+    R_{t+dt}^f = \frac{1}{P_t}\left(x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f} A(\epsilon_{f,t+dt}, u_{j, t+dt}^{f})( K_j^{f})^{\alpha} + \chi_{t+dt, t+dt}^{f}C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+\left.+ z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt} G(\epsilon_{f,t+dt}, \lambda_{f,t+dt})+ \sum_{j = dt}^t\chi_{j, t}^{f} \epsilon_{f,t} u_{j,t}^{f} x_{t} (K_j^{f})^{\alpha} dt\right).
+\end{multline*}
+We would like to compute
+\begin{equation*}
+\text{Cov}_t(R_{t+dt}^f,z_{t+dt} - E_t(z_{t+dt})) = E_t(R_{t+dt}^f (z_{t+dt} - E_t(z_{t+dt})) ) = E_t(R_{t+dt}^f z_{t+dt}) - E_t R_{t+dt}^f E_t z_{t+dt}.
+\end{equation*}
+To do so, note 
+{\footnotesize
+\begin{align*}
+    E_t(R_{t+dt}^f z_{t+dt}) &= \frac{1}{P_t}E_t\left(z_{t+dt} x_{t+dt} \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f} A(\epsilon_{f,t+dt}, u_{j, t+dt}^{f})( K_j^{f})^{\alpha} + \chi_{t+dt, t+dt}^{f}C z_{t+dt}^{\frac{1}{1 - \alpha}} x_{t+dt} A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+&\left. + z_{t+dt}^{\frac{1}{1 - \alpha}} x_{t+dt} G(\epsilon_{f,t+dt}, \lambda_{f,t+dt})+ z_{t+dt}\sum_{j = dt}^t\chi_{j, t}^{f} \epsilon_{f,t} u_{j,t}^{f} x_{t} (K_j^{f})^{\alpha} dt\right)
+\end{align*}
+}
+Similarly, we can compute 
+{\footnotesize
+\begin{align*}
+    E_t(R_{t+dt}^f x_{t+dt}) &= \frac{1}{P_t}E_t \left(x_{t+dt}^2 \sum_{ j = dt}^{t} \chi_{j, t+dt}^{f} A(\epsilon_{f,t+dt}, u_{j, t+dt}^{f})( K_j^{f})^{\alpha} + \chi_{t+dt, t+dt}^{f} C z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt}^2 A(\epsilon_{f, t+dt}, 1)^{\frac{1}{1 - \alpha}}\right.\\
+&\left. + z_{t+dt}^{\frac{\alpha}{1 - \alpha}} x_{t+dt}^2 G(\epsilon_{f,t+dt}, \lambda_{f,t+dt})+ x_{t+dt}\sum_{j = dt}^t\chi_{j, t}^{f} \epsilon_{f,t} u_{j,t}^{f} x_{t} (K_j^{f})^{\alpha} dt\right).
+\end{align*}
+}

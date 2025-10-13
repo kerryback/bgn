@@ -1,0 +1,71 @@
+\RequirePackage{graphicx}
+\RequirePackage{amsthm}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{stfloats}
+\RequirePackage{natbib}
+\RequirePackage{booktabs}
+\RequirePackage{chngcntr}
+\RequirePackage{setspace}
+\RequirePackage{dcolumn}
+\RequirePackage{pgfplots}
+\RequirePackage{caption}
+\RequirePackage{rotating}
+\RequirePackage{longtable}
+\RequirePackage{subcaption}
+\RequirePackage{comment}
+\RequirePackage{ulem}
+\RequirePackage{appendix}
+\RequirePackage{cancel}
+\RequirePackage{multirow}
+\usepackage{appendix}
+\usepackage{subcaption}
+
+\renewcommand\thesubfigure{\Roman{subfigure}}
+\captionsetup[subfigure]{labelformat=simple, labelsep=period}
+\renewcommand\thesubtable{\Roman{subtable}}
+\captionsetup[subtable]{labelformat=simple, labelsep=period}
+
+\bibliographystyle{jf}
+% \usepackage[backend=biber,style=authoryear,cite:full=first]{biblatex}
+% \addbibresource{bibliography.bib}
+
+\usepackage[colorlinks,allcolors=blue]{hyperref}
+\usepackage[nameinlink,capitalize]{cleveref}
+\newcommand\Insert[1]{%
+  \begin{center}
+  \framebox{Insert \Cref{#1} here.}
+  \end{center}
+  \bigskip}
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry}
+\onehalfspacing
+\pgfplotsset{compat=1.18}
+\usepackage[tight-spacing=true]{siunitx}
+\usepackage{afterpage}
+\usepackage{placeins}
+\usepackage{enumerate}
+\usepackage{bbm}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}[proposition]{Theorem}
+\newtheorem{lemma}[proposition]{Lemma}
+\newtheorem{corollary}[proposition]{Corollary}
+
+%\numberwithin{lemma}{section}
+\numberwithin{proposition}{section}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+%\numberwithin{table}{section}
+
+\newcommand{\numpanels}{10 }
+\newcommand{\myreal}{\mathbb{R}}
+\newcommand{\E}{\mathrm{e}}
+\newcommand{\mye}{\ensuremath{\mathsf{E}}}
+\DeclareMathOperator{\cov}{cov}
+\newcommand{\D}{\mathrm{d}}
+
+

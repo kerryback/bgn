@@ -1,0 +1,34 @@
+# Configuration for BGN model test run
+# Usage: python main.py --config config.yaml
+
+# Model selection
+model: bgn
+
+# Simulation parameters
+start_iter: 0
+num_iters: 1
+
+# Panel dimensions
+N: 100          # Number of firms
+T: 720          # Number of time periods (excluding burnin) - 60 years of monthly data
+burnin: 200     # Burnin period
+
+# DKKM parameters
+include_mkt: false
+nmat: 1                      # Number of random weight matrices
+nfeatures_lst: [6, 36, 360]  # Different feature counts to test
+n_ipca_rff: 36
+
+# Regularization parameters
+alpha_lst_fama: [0]
+# For BGN model, use standard alpha list
+alpha_lst: [0, 0.0001, 0.001, 0.01, 0.05, 0.1, 1]
+
+# IPCA parameters
+ipca_nfactors_lst: [1, 2]
+
+# Computation parameters
+n_jobs: 4
+
+# Output directory
+output_dir: paper_outputs
