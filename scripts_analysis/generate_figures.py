@@ -23,8 +23,8 @@ import seaborn as sns
 from pathlib import Path
 
 # Configuration
-RESULTS_DIR = Path("paper_outputs")
-OUTPUT_DIR = Path("Tex/Images (main)/for tex")
+RESULTS_DIR = Path("../outputs")
+OUTPUT_DIR = Path("../figures")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Set seaborn style

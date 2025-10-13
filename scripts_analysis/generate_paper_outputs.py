@@ -33,7 +33,7 @@ from pathlib import Path
 
 def check_results_exist():
     """Check if simulation results exist."""
-    results_dir = Path("paper_outputs")
+    results_dir = Path("../outputs")
 
     if not results_dir.exists():
         print("ERROR: paper_outputs/ directory does not exist!")

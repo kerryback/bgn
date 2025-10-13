@@ -1,5 +1,7 @@
-# Output folder (all generated files)
+# Generated outputs
 outputs/
+tables/
+figures/
 
 # Python cache
 __pycache__/

@@ -19,8 +19,8 @@ import numpy as np
 from pathlib import Path
 
 # Configuration
-RESULTS_DIR = Path("paper_outputs")
-OUTPUT_DIR = Path("Tex/Tables (main)/for tex")
+RESULTS_DIR = Path("../outputs")
+OUTPUT_DIR = Path("../tables")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_data():
