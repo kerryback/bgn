@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy import interpolate
-from parameters_kp14 import *
+from models.parameters_kp14 import *
 from joblib import Parallel, delayed
 
 import scipy.special
@@ -16,7 +16,7 @@ n_jobs = 7 # number of jobs in parallelized tasks
 
 # read in G functions estimated in kp14_fd.py 
 # recall they don't include lambda_ft, which varies across firms and time
-G_in = pd.read_csv('../inputs/G_func.csv')
+G_in = pd.read_csv('G_func.csv')
 eps_grid = G_in.eps.values
 G_up = interpolate.interp1d(eps_grid, G_in.G_up.values, fill_value="extrapolate")
 G_down = interpolate.interp1d(eps_grid, G_in.G_down.values, fill_value="extrapolate")

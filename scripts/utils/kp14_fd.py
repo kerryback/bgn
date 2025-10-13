@@ -4,7 +4,7 @@ import scipy.sparse as sp
 from scipy.sparse import csr_matrix, hstack, vstack
 import scipy.sparse.linalg as spla
 
-from parameters_kp14 import *
+from models.parameters_kp14 import *
 
 # G value grid
 n = 1000
@@ -105,5 +105,5 @@ df_out = pd.DataFrame({
     'G_up' : G_out[:, 0],
     'G_down' : G_out[:, 1]
 })
-df_out.to_csv('G_func.csv')
+df_out.to_csv('../models/G_func.csv')
 

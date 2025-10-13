@@ -1,10 +1,10 @@
 import numpy as np
 import scipy.linalg as linalg
-from parameters import *
+from models.parameters import *
 from sklearn.linear_model import Ridge
 from scipy.optimize import minimize
 
-import dkkm_functions as dkkm
+from strategies import dkkm_functions as dkkm
 
 
 # ridge regression function

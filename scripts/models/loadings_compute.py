@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd 
 import scipy.linalg as linalg
 
-import panel_functions as bgn
-from sdf_compute import *
-from parameters import *
+from models import panel_functions as bgn
+from models.sdf_compute import *
+from models.parameters import *
 
 ## aim to output two T x N matrix of loadings
 

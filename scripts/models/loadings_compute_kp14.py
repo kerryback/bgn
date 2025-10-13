@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from parameters_kp14 import *
+from models.parameters_kp14 import *
 
 # function to compute loadings based on Taylor
 def loadings_Taylor(K, x, z, eps, uj, rate, high, lambda_f, P, G_up, G_down):

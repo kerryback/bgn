@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from parameters_gs21 import *
-from sdf_compute_gs21 import *
+from models.parameters_gs21 import *
+from models.sdf_compute_gs21 import *
 
 P_up_mat = np.array(pd.read_csv('GS21_solfiles/P_up.csv', header=None)).reshape(zpts, xpts, bpts)
 P_down_mat = np.array(pd.read_csv('GS21_solfiles/P_down.csv', header=None)).reshape(zpts, xpts, bpts)

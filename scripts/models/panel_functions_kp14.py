@@ -2,16 +2,16 @@
 import numpy as np
 import pandas as pd
 from scipy import interpolate
-from parameters_kp14 import *
-from sdf_compute_kp14 import *
-from loadings_compute_kp14 import *
+from models.parameters_kp14 import *
+from models.sdf_compute_kp14 import *
+from models.loadings_compute_kp14 import *
 
 # script to simulate panel for discretized Kogan Papanikolaou (2014) model
 
 def create_arrays(N, T):
     # read in G functions estimated in kp14_fd.py 
     # recall they don't include lambda_f, which varies across firms
-    G_in = pd.read_csv('../inputs/G_func.csv')
+    G_in = pd.read_csv('G_func.csv')
     eps_grid = G_in.eps.values
     G_up = interpolate.interp1d(eps_grid, G_in.G_up.values, fill_value="extrapolate")
     G_down = interpolate.interp1d(eps_grid, G_in.G_down.values, fill_value="extrapolate")

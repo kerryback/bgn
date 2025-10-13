@@ -8,15 +8,15 @@ from scipy.sparse import csr_matrix, diags, kron
 
 from scipy.stats import expon
 from scipy.optimize import fsolve
-from vasicek import *
+from utils.vasicek import *
 from scipy import interpolate
 from scipy.interpolate import RegularGridInterpolator
 from joblib import Parallel, delayed
-from parameters import *
+from models.parameters import *
 
 
 Chat = np.exp(-3.7)
-approx = pd.read_csv("../inputs/Jstar.csv")
+approx = pd.read_csv("Jstar.csv")
 Jstar = interpolate.interp1d(approx.r, approx.J, fill_value="extrapolate")
 r_pts = np.array(approx.r).reshape(len(approx.r), 1)
 

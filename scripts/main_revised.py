@@ -26,17 +26,17 @@ import scipy.linalg as linalg
 from joblib import Parallel, delayed
 from datetime import datetime
 
-import fama_functions as fama 
-import dkkm_functions as dkkm
-import panel_functions as bgn
-import panel_functions_kp14 as kp
-import panel_functions_gs21 as gs
-import ipca_functions as ipca
-import sdf_compute as sdf_bgn
-import sdf_compute_kp14 as sdf_kp
-import sdf_compute_gs21 as sdf_gs
-from parameters import *
-import sorted_portfolios as sorts
+from strategies import fama_functions as fama 
+from strategies import dkkm_functions as dkkm
+from models import panel_functions as bgn
+from models import panel_functions_kp14 as kp
+from models import panel_functions_gs21 as gs
+from strategies import ipca_functions as ipca
+from models import sdf_compute as sdf_bgn
+from models import sdf_compute_kp14 as sdf_kp
+from models import sdf_compute_gs21 as sdf_gs
+from models.parameters import *
+from strategies import sorted_portfolios as sorts
 
 panels = {'bgn': bgn,'kp': kp, 'gs':gs}
 sdf = {'bgn': sdf_bgn,'kp': sdf_kp, 'gs': sdf_gs}

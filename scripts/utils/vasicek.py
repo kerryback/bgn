@@ -6,7 +6,7 @@ import pandas as pd
 from scipy.optimize import root_scalar, fsolve
 from scipy.stats import norm
 from scipy.special import roots_laguerre
-from parameters import *
+from models.parameters import *
 
 print(f"started import of vasicek at {datetime.now().strftime('%a %d %b %Y, %I:%M%p')}")
 
@@ -143,7 +143,7 @@ while maxerr > 0.0001:
         {"r": grid, "J": Jvals}
     )
     df = df.sort_values(by="r")
-    df.to_csv("Jstar.csv", index=False)
+    df.to_csv("../models/Jstar.csv", index=False)
 
     J2hat = np.interp(grid2, grid1, J1)
     err = np.abs(np.array(J2) - J2hat) / J2

@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for file in models/*.py strategies/*.py utils/*.py)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

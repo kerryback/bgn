@@ -2,9 +2,9 @@
 import numpy as np
 import pandas as pd
 from scipy import interpolate
-from parameters_gs21 import *
-from sdf_compute_gs21 import *
-from loadings_compute_gs21 import *
+from models.parameters_gs21 import *
+from models.sdf_compute_gs21 import *
+from models.loadings_compute_gs21 import *
 
 # function to generate Gomes Schmid 2021 panel with N firms and T periods
 def create_arrays(N, T):

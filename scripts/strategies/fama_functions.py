@@ -3,7 +3,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 import scipy.linalg as linalg
 from sklearn.linear_model import Ridge
-from parameters import *
+from models.parameters import *
 
 # calculate fama-french weights for a single month
 def fama_french(data, **kwargs):

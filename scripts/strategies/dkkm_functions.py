@@ -4,7 +4,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 import scipy.linalg as linalg
 import statsmodels.api as sm 
-from parameters import *
+from models.parameters import *
 
 # DKKM standardization
 def rank_standardize(arr):
