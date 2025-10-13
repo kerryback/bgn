@@ -12,7 +12,7 @@ from parameters import *
 def create_arrays(N, T):
 
     # Jstar = value of growth options
-    approx = pd.read_csv("inputs/Jstar.csv")
+    approx = pd.read_csv("../inputs/Jstar.csv")
     Jstar = interpolate.interp1d(approx.r, approx.J, fill_value="extrapolate")
 
     # shocks to log SDF process at dates 1, ..., T

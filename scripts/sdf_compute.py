@@ -16,7 +16,7 @@ from parameters import *
 
 
 Chat = np.exp(-3.7)
-approx = pd.read_csv("inputs/Jstar.csv")
+approx = pd.read_csv("../inputs/Jstar.csv")
 Jstar = interpolate.interp1d(approx.r, approx.J, fill_value="extrapolate")
 r_pts = np.array(approx.r).reshape(len(approx.r), 1)
 
