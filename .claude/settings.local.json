@@ -13,7 +13,9 @@
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
