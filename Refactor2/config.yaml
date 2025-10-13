@@ -31,4 +31,4 @@ ipca_nfactors_lst: [1, 2]
 n_jobs: 4
 
 # Output directory
-output_dir: paper_outputs
+output_dir: outputs
