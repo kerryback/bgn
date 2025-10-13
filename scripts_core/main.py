@@ -1,23 +1,8 @@
-# specify how many iterations to run 
-startiter, numiters = 0, 10
-model = 'gs' 
 
-## other parameters 
 # N= number of firms, T= number of time periods (not including burnin = 200)
 # max_features= max DKKM features
 # n_ipca_rff= number of RFF features in IPCA-DKKM hybrid
-N, T, n_ipca_rff = 100, 400, 36
 
-include_mkt = False # dummy to include market in DKKM
-nmat = 1 # number of weights matrices for DKKM
-nfeatures_lst = [6, 36, 360]#, 3600]  # different feature numbers used for DKKM
-max_features = max(nfeatures_lst) 
-alpha_lst_fama =  [0] # B-J shrinkage for Fama methods
-alpha_lst =  [0, 0.0001, 0.001, 0.01, 0.05, 0.1, 1] # B-J shrinkage for DKKM
-if model =='gs':
-    alpha_lst = [0, 0.0000001, 0.000001,0.00001, 0.0001, 0.001, 0.01, 0.1, 1]
-ipca_nfactors_lst = [1, 2]#, 3] #, 4]#, 5, 6] # number of IPCA factors considered
-n_jobs = 10 # number of jobs in parallelized tasks
 
 import numpy as np 
 import pandas as pd 
@@ -39,6 +24,38 @@ from models import sdf_compute_gs21 as sdf_gs
 from models.parameters import *
 from strategies import sorted_portfolios as sorts
 
+
+# Load configuration from config.yaml
+import yaml
+from pathlib import Path
+
+config_path = Path(__file__).parent.parent / 'config.yaml'
+with open(config_path, 'r') as f:
+    config = yaml.safe_load(f)
+
+# Extract configuration
+startiter = config['start_iter']
+numiters = config['num_iters']
+model = config['model']
+N = config['N']
+T = config['T']
+burnin = config['burnin']
+include_mkt = config['include_mkt']
+nmat = config['nmat']
+nfeatures_lst = config['nfeatures_lst']
+n_ipca_rff = config['n_ipca_rff']
+alpha_lst_fama = config['alpha_lst_fama']
+alpha_lst = config['alpha_lst']
+if model == 'gs':
+    alpha_lst = config.get('alpha_lst_gs', alpha_lst)
+ipca_nfactors_lst = config['ipca_nfactors_lst']
+n_jobs = config['n_jobs']
+output_dir = Path(config['output_dir'])
+output_dir.mkdir(parents=True, exist_ok=True)
+
+max_features = max(nfeatures_lst)
+
+
 # dictionaries to map "model"
 panels = {'bgn': bgn,'kp': kp, 'gs':gs}
 sdf = {'bgn': sdf_bgn,'kp': sdf_kp, 'gs': sdf_gs}
@@ -51,19 +68,18 @@ factor = {'bgn': ['f_1_', 'f_2_'],
 
 
 # Remove old portfolio weight files
-files_to_clear = [f'port_{model}.csv'] + [f'port_{m}_{model}.csv' for m in ['dkkm', 'fama', 'ipca', 'model']] + [f'sorted_portfolios_{model}.csv']
+files_to_clear = [output_dir / f'port_{model}.csv'] + [output_dir / f'port_{m}_{model}.csv' for m in ['dkkm', 'fama', 'ipca', 'model']] + [output_dir / f'sorted_portfolios_{model}.csv']
 for file_path in files_to_clear:
     if os.path.exists(file_path):
         os.remove(file_path)
 
 # Define fieldnames for each output file
-file_specs = {
-    f'port_{model}.csv': ['iter', 'month'] + [f'firm_{i+1}' for i in range(N)],
-    f'port_model_{model}.csv': ['iter', 'month', 'method'] + [f'firm_{i+1}' for i in range(N)],
-    f'port_dkkm_{model}.csv': ['iter', 'month', 'include_mkt', 'method', 'mat', 'nfeatures', 'alpha'] 
+file_specs = {output_dir / f'port_{model}.csv': ['iter', 'month'] + [f'firm_{i+1}' for i in range(N)],
+    output_dir / f'port_model_{model}.csv': ['iter', 'month', 'method'] + [f'firm_{i+1}' for i in range(N)],
+    output_dir / f'port_dkkm_{model}.csv': ['iter', 'month', 'include_mkt', 'method', 'mat', 'nfeatures', 'alpha'] 
                                + [f'firm_{i+1}' for i in range(N)],
-    f'port_fama_{model}.csv': ['iter', 'month', 'method', 'alpha'] + [f'firm_{i+1}' for i in range(N)],
-    f'port_ipca_{model}.csv': ['iter', 'month', 'nfactors'] + [f'firm_{i+1}' for i in range(N)],
+    output_dir / f'port_fama_{model}.csv': ['iter', 'month', 'method', 'alpha'] + [f'firm_{i+1}' for i in range(N)],
+    output_dir / f'port_ipca_{model}.csv': ['iter', 'month', 'nfactors'] + [f'firm_{i+1}' for i in range(N)],
 }
 
 # Write headers
@@ -218,7 +234,7 @@ def run_panel(iter):
                 **{f'firm_{i+1}': val for i, val in enumerate(weights)}
             }
             new_row = pd.DataFrame([dat])
-            new_row.to_csv('port_model_' + model + '.csv', mode='a', header=False, index=False)
+            new_row.to_csv(output_dir / 'port_model_' + model + '.csv', mode='a', header=False, index=False)
 
         model_results = pd.DataFrame(model_results).T
         model_results.columns = ["stdev", "mn", "xret", "hjd"]
@@ -346,7 +362,7 @@ def run_panel(iter):
                     **{f'firm_{i+1}': val for i, val in enumerate(weights)}
                 }
                 new_row = pd.DataFrame([dat])
-                new_row.to_csv('port_fama_' + model + '.csv', mode='a', header=False, index=False)
+                new_row.to_csv(output_dir / 'port_fama_' + model + '.csv', mode='a', header=False, index=False)
 
         fama_results = pd.DataFrame(fama_results).T
         fama_results.columns = ["stdev", "mn", "xret", "hjd"]
@@ -379,7 +395,7 @@ def run_panel(iter):
                 **{f'firm_{i+1}': val for i, val in enumerate(weights)}
             }
             new_row = pd.DataFrame([dat])
-            new_row.to_csv('port_ipca_' + model + '.csv', mode='a', header=False, index=False)
+            new_row.to_csv(output_dir / 'port_ipca_' + model + '.csv', mode='a', header=False, index=False)
             
 
         ipca_results = pd.DataFrame(ipca_results).T
@@ -468,23 +484,23 @@ for iter in range(startiter, startiter + numiters):
 
     panel["iter"] = iter 
     panel_out = pd.concat((panel_out, panel.reset_index()))
-    panel_out.to_csv(f"panel_{model}.csv", index=False)
+    panel_out.to_csv(output_dir / f"panel_{model}.csv", index=False)
 
     model_results["iter"] = iter 
     model_out = pd.concat((model_out, model_results))
-    model_out.to_csv(f"results_model_{model}.csv", index=False)
+    model_out.to_csv(output_dir / f"results_model_{model}.csv", index=False)
 
     dkkm_results["iter"] = iter 
     dkkm_out = pd.concat((dkkm_out, dkkm_results))
-    dkkm_out.to_csv(f"results_dkkm_{model}.csv", index=False)
+    dkkm_out.to_csv(output_dir / f"results_dkkm_{model}.csv", index=False)
 
     fama_results["iter"] = iter
     fama_out = pd.concat((fama_out, fama_results))
-    fama_out.to_csv(f"results_fama_{model}.csv", index=False)
+    fama_out.to_csv(output_dir / f"results_fama_{model}.csv", index=False)
 
     ipca_results["iter"] = iter
     ipca_out = pd.concat((ipca_out, ipca_results))
-    ipca_out.to_csv(f"results_ipca_{model}.csv", index=False)
+    ipca_out.to_csv(output_dir / f"results_ipca_{model}.csv", index=False)
  
     #ipca_rff_results["iter"] = iter
     #ipca_rff_out = pd.concat((ipca_rff_out, ipca_rff_results))
@@ -508,7 +524,7 @@ for iter in range(startiter, startiter + numiters):
 
     tseries = pd.concat((tseries, fm_rets, ff_rets, ipca_rets, model_premia["taylor"], model_premia["proj"]), axis = 1)
     tseries_out = pd.concat((tseries_out, tseries))
-    tseries_out.to_csv(f"results_tseries_{model}.csv", index=False)
+    tseries_out.to_csv(output_dir / f"results_tseries_{model}.csv", index=False)
 
     # Save sorted portfolio results
     sorts.save_portfolio_results(sorted_ports, model, iter)
