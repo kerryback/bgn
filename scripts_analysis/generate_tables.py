@@ -1,7 +1,7 @@
 """
 Generate all LaTeX tables for the paper from simulation results.
 
-This script reads CSV files from the paper_outputs folder and generates
+This script reads CSV files from the csv folder and generates
 LaTeX tables that are included in Tex/main.tex.
 
 Usage:
@@ -19,13 +19,13 @@ import numpy as np
 from pathlib import Path
 
 # Configuration
-RESULTS_DIR = Path("../outputs")
+RESULTS_DIR = Path("../csv")
 OUTPUT_DIR = Path("../tables")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_data():
     """Load and process all results data."""
-    print("Loading data from paper_outputs...")
+    print("Loading data from csv...")
 
     # Load data for all three theories
     data = {}
@@ -282,7 +282,7 @@ def generate_sdf_weight_table():
     latex += "\\end{table}\n"
     latex += "\n"
     latex += "% NOTE: This table requires SDF weight data.\n"
-    latex += "% Check if results_sdf_weights_{theory}.csv files exist in paper_outputs/\n"
+    latex += "% Check if results_sdf_weights_{theory}.csv files exist in csv/\n"
 
     # Write to file
     output_file = OUTPUT_DIR / "sdf_weight_statistics_2.tex"

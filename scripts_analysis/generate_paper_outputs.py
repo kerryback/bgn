@@ -5,11 +5,11 @@ This script runs the complete pipeline:
 1. Generates LaTeX tables from simulation results
 2. Generates PDF figures from simulation results
 
-It assumes that simulation results already exist in the paper_outputs/ folder.
+It assumes that simulation results already exist in the csv/ folder.
 To generate simulation results, run: cd Refactor2 && python main.py --config config.yaml
 
 Usage:
-    python generate_paper_outputs.py
+    python generate_csv.py
 
 Output:
     Tables:
@@ -33,10 +33,10 @@ from pathlib import Path
 
 def check_results_exist():
     """Check if simulation results exist."""
-    results_dir = Path("../outputs")
+    results_dir = Path("../csv")
 
     if not results_dir.exists():
-        print("ERROR: paper_outputs/ directory does not exist!")
+        print("ERROR: csv/ directory does not exist!")
         print("Please run simulations first:")
         print("  cd Refactor2 && python main.py --config config.yaml")
         return False

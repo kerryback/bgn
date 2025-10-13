@@ -1,7 +1,7 @@
 """
 Generate all figures for the paper from simulation results.
 
-This script reads CSV files from the paper_outputs folder and generates
+This script reads CSV files from the csv folder and generates
 PDF figures that are included in Tex/main.tex.
 
 Usage:
@@ -23,7 +23,7 @@ import seaborn as sns
 from pathlib import Path
 
 # Configuration
-RESULTS_DIR = Path("../outputs")
+RESULTS_DIR = Path("../csv")
 OUTPUT_DIR = Path("../figures")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
